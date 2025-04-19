@@ -5,6 +5,7 @@
 
 - type: twitter
   icon: "fa-brands fa-x-twitter"
+  url: "https://x.com/robyrocuy"
 
 - type: email
   icon: "fas fa-envelope"
@@ -12,6 +13,11 @@
 
 - type: rss
   icon: "fas fa-rss"
+  noblank: true
+
+- type: linkedin
+  icon: "fab fa-linkedin"
+  url: "https://www.linkedin.com/in/roby-attoillah"
   noblank: true
 # Uncomment and complete the url below to enable more contact options
 #
