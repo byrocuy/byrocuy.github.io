@@ -4,23 +4,9 @@ icon: fas fa-info-circle
 order: 4
 ---
 
-# Roby Attoillah
+AI Engineer specializing in production-ready multi-agent AI systems for customer-facing applications. Delivered measurable performance improvements including 70% chatbot response time reduction and 3x agent workflow efficiency gains.
 
-**AI Engineer | Multi-Agent Systems | LLM, LangGraph, LangChain | Production AI**
-
-Sukabumi, West Java, Indonesia
-
----
-
-## About
-
-AI Engineer specializing in building production-ready **multi-agent AI systems** for customer-facing applications. Expert in designing intelligent agent architectures using **LangGraph** and **LangChain**, delivering measurable impact including **70% reduction in chatbot overall response time** (10s → 3s) and **3x improvement in agent workflow efficiency**. 
-
-Experienced in end-to-end production system development—from secure **WebSockets** implementation for seamless human-agent handoffs to complete reservation systems. Strong foundation in optimizing production AI performance, implementing safe communication protocols, and deploying scalable solutions on **AWS**.
-
-Solid background in **Machine Learning**, **Deep Learning**, and **Computer Vision** with proven ability to transition research concepts into production-grade AI solutions.
-
-**Tech Stack:** LangGraph, LangChain, FastAPI, Redis, WebSockets, AWS, Python, OpenAI
+Experienced in building intelligent agent architectures, real-time communication systems, and end-to-end AI solutions. Strong foundation in Machine Learning, Deep Learning, and Computer Vision with proven ability to transition research concepts into scalable, production-grade systems.
 
 ---
 
@@ -28,7 +14,7 @@ Solid background in **Machine Learning**, **Deep Learning**, and **Computer Visi
 
 **Associate AI Engineer** @ BitHealth  
 *Tangerang, Banten, Indonesia | February 2025 – Present*
-- **Improved chatbot Time-to-First-Token (TTFT) by 70%** (10s → 3s) by implementing streaming responses, adding intermediate messages, and eliminating redundant processes
+- **Improved chatbot Time-to-First-Token (TTFT) by 70%** (10s → 2s) by implementing streaming responses, adding intermediate messages, and eliminating redundant processes
 - Implemented secure **WebSockets** protocol for two-way communication between users and human agents, improving chatbot reliability and seamless customer service experiences
 - Developed **end-to-end multi-agent system** for medical package reservations (MCU, labs, radiology, homecare)
 - **Tech:** LangGraph, LangChain, FastAPI, Redis, WebSockets, AWS
