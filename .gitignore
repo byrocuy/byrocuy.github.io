@@ -25,3 +25,13 @@ package-lock.json
 # Misc
 _sass/vendors
 assets/js/dist
+
+# Local
+local/
+
+# Local agent configuration
+.pi/
+AGENTS.md
+
+# Ignore file
+.ignore
