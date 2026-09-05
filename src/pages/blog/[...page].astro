@@ -1,0 +1,122 @@
+---
+// Personal site blog — /blog (R1).
+// Pagination via Astro's paginate() API (pageSize 10 — future-proof;
+// 2 posts today → one page). Astro requires the [...page] rest param for
+// paginate(), so this file serves BOTH /blog/ (page 1, no suffix) and
+// /blog/2/, /blog/3/ … — `index.astro` cannot host paginate() because
+// the route would have no page param. Page 1 still emits as
+// /blog/index.html.
+//
+// Title is ONLY a huge "Blog" (Space Grotesk). Ledger rows under a
+// mono-caps POST / DATE header.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+
+// Reading time from the raw body (code fences + markup stripped, ~220 wpm).
+const readingTimeOf = (p: CollectionEntry<'posts'>) => {
+  const text = p.body ?? ''
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/[#>_`~()[\]|]/g, ' ');
+  return Math.max(1, Math.round(text.trim().split(/\s+/).filter(Boolean).length / 220));
+};
+
+export async function getStaticPaths({ paginate }: Parameters<GetStaticPaths>[0]) {
+  const allPosts = (await getCollection('posts'))
+    .filter((p) => !p.data.draft)
+    .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+  return paginate(allPosts, { pageSize: 10 });
+}
+
+const { page } = Astro.props;
+const posts = page.data;
+---
+<BaseLayout
+  title="Blog — Roby Attoillah"
+  current="blog"
+  description="Roby Attoillah — personal site. Blog and about."
+>
+  <div class="page">
+    <header class="blog-head">
+      <h1>Blog</h1>
+    </header>
+
+    <div class="ledger">
+      <div class="ledger__head">
+        <span class="ledger__caption">POST / DATE</span>
+      </div>
+      {posts.map((post) => (
+        <PostCard
+          title={post.data.title}
+          description={post.data.description}
+          date={post.data.pubDate}
+          readingTime={readingTimeOf(post)}
+          href={`/blog/${post.id}/`}
+        />
+      ))}
+    </div>
+
+    {page.lastPage > 1 && (
+      <nav class="pager" aria-label="Pagination">
+        {page.url.prev && (
+          <a class="pager-link" href={page.url.prev}>← Newer</a>
+        )}
+        <span class="pager-info mono-label tnum">
+          Page {page.currentPage} / {page.lastPage}
+        </span>
+        {page.url.next && (
+          <a class="pager-link pager-link--next" href={page.url.next}>Older →</a>
+        )}
+      </nav>
+    )}
+  </div>
+</BaseLayout>
+
+<style>
+  .blog-head {
+    padding-bottom: var(--s6);
+    border-bottom: 1px solid var(--hairline);
+  }
+  .blog-head h1 {
+    font-size: var(--step-5);
+  }
+
+  .ledger {
+    margin-top: var(--s2);
+  }
+  .ledger__caption {
+    grid-column: 1 / -1; /* single spanning caption over the row grid */
+  }
+
+  .pager {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: var(--s4);
+    margin-top: var(--s6);
+  }
+  .pager-link {
+    font-family: var(--font-mono);
+    font-size: var(--label);
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-400);
+    text-decoration: none;
+    transition: color 160ms ease;
+  }
+  .pager-link:hover {
+    color: var(--accent-300);
+  }
+  .pager-link--next {
+    text-align: right;
+  }
+  .pager-info {
+    color: var(--ink-500);
+    white-space: nowrap;
+  }
+</style>

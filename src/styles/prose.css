@@ -1,6 +1,6 @@
 /* ============================================================
-   TRACE PAPER — prose (article typography)
-   PLAN §3.2 (type) · §3.4 (tables, blockquotes, figures)
+   Personal site — prose (article typography, R1 dark)
+   Type · tables · blockquotes · figures · code.
    Applied via `.prose` on article / post bodies.
    ============================================================ */
 
@@ -32,14 +32,13 @@
   margin-top: 0;
 }
 
-/* ——— §3.2 Headings: Fraunces, clamp scale ——— */
+/* ——— Headings: Space Grotesk, medium-bold, tight tracking ——— */
 .prose h1,
 .prose h2,
 .prose h3,
 .prose h4,
 .prose h5 {
   font-family: var(--font-display);
-  font-optical-sizing: auto;
   letter-spacing: -0.02em;
   line-height: 1.15;
   color: var(--ink-900);
@@ -77,27 +76,29 @@
   color: var(--ink-700);
 }
 
-/* ——— Lead paragraph: Fraunces italic (echo, light theme) ——— */
-.prose > p:first-of-type {
-  font-family: var(--font-display);
-  font-style: italic;
-  font-weight: 400;
-  font-optical-sizing: auto;
-  font-size: var(--step-1);
-  line-height: 1.45;
-  color: var(--ink-700);
+/* ——— R2 TOC: anchor-jump targets clear the sticky nav ——— */
+.prose :is(h1, h2, h3, h4, h5, h6) {
+  scroll-margin-top: var(--s8);
 }
 
-/* ——— Links — §3.1 contrast rule: text links are accent-600/700 ——— */
+/* ——— Lead paragraph: larger body sans ——— */
+.prose > p:first-of-type {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: var(--step-1);
+  line-height: 1.5;
+  color: var(--ink-900);
+}
+
+/* ——— Links — text links use the lighter vermilion on dark ——— */
 .prose a {
-  color: var(--accent-600);
+  color: var(--accent-400);
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.15em;
 }
-.prose a:hover,
-.prose a:visited {
-  color: var(--accent-700);
+.prose a:hover {
+  color: var(--accent-300);
 }
 
 .prose strong {
@@ -105,12 +106,10 @@
   color: var(--ink-900);
 }
 
-/* Emphasis = Fraunces italic (§3.2) */
+/* Emphasis — plain italic in the body face */
 .prose em {
-  font-family: var(--font-display);
   font-style: italic;
   font-weight: 400;
-  font-optical-sizing: auto;
 }
 
 /* ——— Inline code: Plex Mono, accent-100 wash ——— */
@@ -177,7 +176,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* ——— Blockquote / pull-quote: Fraunces italic, vermilion bar ——— */
+/* ——— Blockquote / pull-quote: body sans, vermilion bar ——— */
 .prose blockquote {
   margin: var(--s6) 0;
   padding: var(--s4) 0 var(--s4) var(--s5);
@@ -185,10 +184,9 @@
   color: var(--ink-700);
 }
 .prose blockquote p {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-style: italic;
   font-weight: 400;
-  font-optical-sizing: auto;
   font-size: var(--step-2);
   line-height: 1.45;
 }

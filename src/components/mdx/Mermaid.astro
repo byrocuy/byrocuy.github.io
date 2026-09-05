@@ -1,5 +1,5 @@
 ---
-// TRACE PAPER Mermaid (§6) — client-side-only diagram rendering.
+// Personal site Mermaid — client-side-only diagram rendering.
 // mermaid is NOT wired into the build (no remark/rehype mermaid plugin):
 // this component ships a lazy `await import('mermaid')` in a plain page
 // script, so the mermaid bundle only loads on posts that use <Mermaid>
@@ -33,27 +33,27 @@ const { code, caption = 'Diagram' } = Astro.props;
       startOnLoad: false,
       securityLevel: 'strict',
       theme: 'neutral',
-      // TRACE PAPER palette (§3.1) so diagrams read as part of the paper.
+      // Dark palette so diagrams read as part of the site.
       themeVariables: {
         fontFamily: "'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif",
-        background: '#FBFAF6',
-        primaryColor: '#F4F0E6',
-        primaryBorderColor: '#C8C0AA',
-        primaryTextColor: '#16140F',
-        lineColor: '#C8C0AA',
-        secondaryColor: '#FBFAF6',
-        tertiaryColor: '#FBE6DD',
-        actorBkg: '#F4F0E6',
-        actorBorder: '#C8C0AA',
-        actorTextColor: '#16140F',
-        actorLineColor: '#C8C0AA',
-        signalColor: '#C8C0AA',
-        signalTextColor: '#16140F',
-        labelBoxBkgColor: '#FBE6DD',
+        background: '#131314',
+        primaryColor: '#1A1A1C',
+        primaryBorderColor: '#33333C',
+        primaryTextColor: '#EDEDE9',
+        lineColor: '#33333C',
+        secondaryColor: '#131314',
+        tertiaryColor: '#3A1A12',
+        actorBkg: '#1A1A1C',
+        actorBorder: '#33333C',
+        actorTextColor: '#EDEDE9',
+        actorLineColor: '#33333C',
+        signalColor: '#33333C',
+        signalTextColor: '#EDEDE9',
+        labelBoxBkgColor: '#3A1A12',
         labelBoxBorderColor: '#E6492B',
-        noteBkgColor: '#F4F0E6',
-        noteBorderColor: '#B6AE9C',
-        sequenceNumberColor: '#7C7567',
+        noteBkgColor: '#1A1A1C',
+        noteBorderColor: '#47474E',
+        sequenceNumberColor: '#82828A',
       },
     });
 

@@ -1,7 +1,8 @@
-// TRACE PAPER — social share image generator (M6).
-// Renders scripts/og-trace-paper.svg (1200×630, paper-0 bg, ink-900 serif
-// name, accent-500 trace-line motif, dot-grid plotter paper) to
-// public/og-default.png via sharp. Pure build-time tool, never shipped.
+// Personal site — social share image generator (R1).
+// Renders scripts/og-trace-paper.svg (1200×630, near-black bg, light ink,
+// Space Grotesk display name with DejaVu Sans fallback for the raster,
+// vermilion TraceLine motif) to public/og-default.png via sharp.
+// Pure build-time tool, never shipped.
 //
 // Usage: node scripts/og.mjs
 import sharp from 'sharp';
@@ -11,13 +12,19 @@ import { dirname, join } from 'node:path';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
-// ——— §3.1 tokens, hardcoded here for the static raster (no CSS cascade in SVG) ———
-const PAPER0 = '#FBFAF6';
-const INK900 = '#16140F';
-const INK700 = '#474139';
-const INK500 = '#7C7567';
-const HAIRLINE = '#DFD8C7';
+// ——— tokens, hardcoded here for the static raster (no CSS cascade in SVG) ———
+const BG0 = '#0A0A0B';
+const INK900 = '#EDEDE9';
+const INK700 = '#B6B6B0';
+const INK500 = '#82828A';
+const HAIRLINE = '#222226';
 const ACCENT = '#E6492B';
+
+// Space Grotesk is self-hosted in the browser; for the raster the SVG
+// declares it first and falls back to DejaVu Sans (grotesque-like, the
+// only font guaranteed on the CI runner / this machine).
+const DISPLAY = "'Space Grotesk', 'DejaVu Sans', sans-serif";
+const MONO = "'DejaVu Sans Mono', monospace";
 
 // TraceLine motif (from TraceLine.astro): oscilloscope S-curve ending in a
 // 7×7 "measurement marker" square, scaled ~0.8125 → 520px wide.
@@ -26,37 +33,28 @@ const TRACE =
 
 const svg = `
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
-  <defs>
-    <pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse">
-      <circle cx="2" cy="2" r="1.4" fill="${INK900}" opacity="0.055"/>
-    </pattern>
-  </defs>
+  <rect width="1200" height="630" fill="${BG0}"/>
 
-  <rect width="1200" height="630" fill="${PAPER0}"/>
-  <rect width="1200" height="630" fill="url(#dots)"/>
+  <!-- top-left: mono-caps wordmark -->
+  <text x="82" y="78" font-family="${MONO}" font-size="20" letter-spacing="7" fill="${INK500}">ROBY ATTOILLAH</text>
 
-  <!-- top-left mark: hairline square + trace spike glyph + wordmark -->
-  <rect x="80" y="60" width="20" height="20" fill="none" stroke="${HAIRLINE}" stroke-width="1.5"/>
-  <path d="M 85 73 L 90 62 L 93 68 L 98 70" fill="none" stroke="${ACCENT}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-  <text x="116" y="77" font-family="'DejaVu Sans Mono', monospace" font-size="21" letter-spacing="6" fill="${INK700}">TRACE PAPER</text>
+  <!-- micro-label above the name -->
+  <text x="82" y="252" font-family="${MONO}" font-size="22" letter-spacing="7" fill="${INK500}">AI ENGINEER</text>
 
-  <!-- name: high-contrast serif, ink-900, tight tracking (Fraunces stand-in) -->
-  <text x="80" y="330" font-family="Georgia, 'Times New Roman', 'DejaVu Serif', serif" font-size="132" font-weight="600" letter-spacing="-3" fill="${INK900}">Roby Attoillah</text>
+  <!-- name: Space Grotesk (DejaVu Sans fallback), light ink, tight tracking -->
+  <text x="80" y="348" font-family="${DISPLAY}" font-size="132" font-weight="600" letter-spacing="-3" fill="${INK900}">Roby Attoillah</text>
 
   <!-- TraceLine beneath the name -->
-  <g transform="translate(84 396) scale(0.8125)" fill="none" stroke="${ACCENT}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+  <g transform="translate(84 404) scale(0.8125)" fill="none" stroke="${ACCENT}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
     <path d="${TRACE}"/>
   </g>
 
-  <!-- sub-line -->
-  <text x="82" y="470" font-family="Georgia, 'Times New Roman', 'DejaVu Serif', serif" font-style="italic" font-size="37" fill="${INK700}">Engineering AI systems that answer in seconds.</text>
-
   <!-- hairline rule -->
-  <line x1="82" y1="528" x2="1118" y2="528" stroke="${HAIRLINE}" stroke-width="1.5"/>
+  <line x1="82" y1="540" x2="1118" y2="540" stroke="${HAIRLINE}" stroke-width="1.5"/>
 
   <!-- footer: mono caps micro-labels -->
-  <text x="82" y="566" font-family="'DejaVu Sans Mono', monospace" font-size="19" letter-spacing="4.5" fill="${INK500}">THE MEASUREMENT LOGBOOK OF AN AI ENGINEER</text>
-  <text x="1118" y="566" text-anchor="end" font-family="'DejaVu Sans Mono', monospace" font-size="19" letter-spacing="4.5" fill="${ACCENT}">P50 · 10 S → 2 S</text>
+  <text x="82" y="578" font-family="${MONO}" font-size="19" letter-spacing="4.5" fill="${INK700}">BLOG · ABOUT</text>
+  <text x="1118" y="578" text-anchor="end" font-family="${MONO}" font-size="19" letter-spacing="4.5" fill="${INK500}">PERSONAL SITE</text>
 </svg>
 `;
 

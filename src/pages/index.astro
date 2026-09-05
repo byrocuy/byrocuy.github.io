@@ -1,121 +1,22 @@
 ---
-// TRACE PAPER home — / (PLAN §4.1): hero + TraceLine, latest 3
-// posts as PostCard ledger rows, one-line résumé teaser.
+// Personal site home — / (R1): one screen, stencil-style sparse.
+// Centered stack: mono micro-label · huge "Roby Attoillah" (title-case)
+// · TraceLine · mono-caps BLOG · ABOUT row. Nothing else — no hero
+// paragraph, no latest posts, no résumé teaser, no scroll.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import TraceLine from '../components/TraceLine.astro';
-import PostCard from '../components/PostCard.astro';
-import { getCollection } from 'astro:content';
-
-const latest = (await getCollection('posts'))
-  .filter((p) => !p.data.draft)
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-  .slice(0, 3);
 ---
-<BaseLayout
-  title="TRACE PAPER — Engineering AI systems that answer in seconds"
-  description="The measurement logbook of Roby Attoillah — an AI engineer slicing first-token latency, one s-curve at a time."
->
-  <section class="hero dot-grid">
-    <div class="hero-inner">
-      <h1>Engineering AI systems that answer in seconds.</h1>
-      <TraceLine label="Latency trace" />
-      <p class="hero-note mono-label">The measurement logbook of an AI engineer — latest entries below.</p>
-    </div>
-  </section>
-
-  <section class="page latest" aria-label="Latest posts">
-    <header class="latest__head">
-      <div>
-        <p class="mono-label">Journal · Latest</p>
-        <h2>Latest measurements</h2>
-      </div>
-      <a class="mono-link" href="/blog/">All posts →</a>
-    </header>
-    <div class="ledger">
-      {
-        latest.map((post) => (
-          <PostCard
-            title={post.data.title}
-            description={post.data.description}
-            date={post.data.pubDate}
-            tags={post.data.tags}
-            href={`/blog/${post.id}/`}
-          />
-        ))
-      }
-    </div>
-  </section>
-
-  <section class="resume-teaser dot-grid">
-    <div class="resume-teaser__inner">
-      <p class="mono-label">Résumé</p>
-      <p class="resume-teaser__line">
-        Associate AI Engineer — sliced P50 first-token latency from 10s to 2s,
-        75% of sessions resolved by AI handoff, 26.4B+ IDR in served appointments.
-      </p>
-      <a class="mono-link" href="/resume/">Read the résumé →</a>
+<BaseLayout>
+  <section class="home">
+    <div class="home__inner">
+      <p class="home__kick mono-label">AI Engineer</p>
+      <h1 class="home__name">Roby Attoillah</h1>
+      <TraceLine label="Trace — Roby Attoillah" />
+      <nav class="home__links" aria-label="Site">
+        <a href="/blog/">Blog</a>
+        <span class="home__dot" aria-hidden="true">·</span>
+        <a href="/about/">About</a>
+      </nav>
     </div>
   </section>
 </BaseLayout>
-
-<style>
-  .latest {
-    padding-bottom: 0;
-  }
-  .latest__head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: var(--s1) var(--s4);
-    padding-bottom: var(--s4);
-    border-bottom: 1px solid var(--hairline);
-  }
-  .latest__head h2 {
-    font-size: var(--step-4);
-  }
-  /* the head already rules the section — drop the ledger's own top rule */
-  .latest .ledger {
-    border-top: 0;
-    margin-top: 0;
-  }
-
-  .mono-link {
-    font-family: var(--font-mono);
-    font-size: var(--label);
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--accent-600); /* §3.1: links are accent-600, never 500 */
-    text-decoration: none;
-    transition: color 160ms ease;
-  }
-  .mono-link:hover {
-    color: var(--accent-700);
-  }
-
-  .resume-teaser {
-    margin-top: var(--s7);
-    padding: var(--s6) 0 var(--s8);
-    border-top: 1px solid var(--hairline);
-  }
-  .resume-teaser__inner {
-    max-width: var(--measure-page);
-    margin-inline: auto;
-    padding-inline: var(--s4);
-  }
-  .resume-teaser .mono-label {
-    display: block;
-    margin-bottom: var(--s2);
-  }
-  .resume-teaser__line {
-    max-width: 42ch;
-    font-size: var(--step-2);
-    line-height: 1.5;
-    color: var(--ink-900);
-  }
-  .resume-teaser .mono-link {
-    display: inline-block;
-    margin-top: var(--s3);
-  }
-</style>

@@ -1,5 +1,5 @@
 /* ============================================================
-   TRACE PAPER — print (M3)
+   Personal site — print
    Every page must stay printable / PDF-friendly. Screen-first:
    these rules only apply under @media print and never touch tokens.
    Résumé rules: hide interactive chrome, keep ink on paper, avoid
@@ -25,10 +25,9 @@
   /* interactive / decorative chrome stays on screen only */
   .nav,
   .skip-link,
-  .hero,
+  .home,
   .trace-line,
-  .codeblock__head,
-  .footer .top-link {
+  .codeblock__head {
     display: none !important;
   }
 
@@ -36,6 +35,15 @@
   .page {
     max-width: none;
     padding: 0;
+  }
+
+  /* R2 TOC chrome stays on screen; posts print as one column */
+  .post-layout {
+    display: block;
+  }
+  .post-toc,
+  .toc-mobile {
+    display: none !important;
   }
 
   main {

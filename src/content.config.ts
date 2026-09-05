@@ -2,7 +2,7 @@ import { defineCollection } from 'astro:content';
 import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
 
-// TRACE PAPER content collections — PLAN §4.2, on the Astro 7 content layer.
+// Personal site content collections — on the Astro 7 content layer.
 // The v7 API moved the config to src/content.config.ts and requires a loader
 // per collection; entry type (content vs data) is derived from the matched
 // file extensions (.mdx → content, .yaml → data).

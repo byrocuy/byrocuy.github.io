@@ -6,9 +6,7 @@ Working dir: `/mnt/d/labs/blog/personal-blog` · Drafted 2026 · All versions ve
 
 ## 1. Vision & Aesthetic Direction
 
-**Name: TRACE PAPER** — *"The measurement logbook of an AI engineer."*
-
-A light, warm instrument-paper editorial system: matte porcelain paper, ink-black type, a single **signal-vermilion** accent, and a fine **plotter dot-grid** texture (dots, not film grain). The inspirations (Stencil, Earendil) are near-black, cold-cyan/blue, grotesque-sans-led, grain-overlaid canvases; TRACE PAPER deliberately inverts all of those axes while keeping the same discipline — type as the main event, hairline construction instead of shadows, tiny letter-spaced mono micro-labels, one accent color used only where it means something. Where Stencil's signature is a cyan glow wedge and Earendil's is an italic serif manifesto over a starfield horizon, ours is the **TraceLine**: an oscilloscope-style SVG stroke that draws itself across the hero and under each article H1 — a latency trace, the literal thing Roby reduced from 10 s to 2 s at work. Display type is a high-contrast variable serif (Fraunces) standing against a neutral IBM Plex Sans body and Plex Mono data voice — no default stacks, and nothing that reads like a copy of either inspiration. One aesthetic, committed end to end: "a print lab notebook rendered on a screen."
+**R1–R2 rework (owner-directed, 2026): dark-first personal site, modern sans, sparse.** The owner's rework request: **dark + modern-sans + sparse** — a near-black canvas, Space Grotesk display type over an IBM Plex Sans body and Plex Mono data voice, one signal-vermilion accent, and a one-screen home. This replaced the original light "TRACE PAPER / measurement logbook" instrument-paper concept (its record survives in §8's M1–M6 history). The inspirations (Stencil, Earendil) are near-black, cold-cyan/blue, grotesque-sans-led canvases; we keep the same discipline — type as the main event, hairline construction instead of shadows, tiny letter-spaced mono micro-labels, one accent color used only where it means something. Article pages follow Stencil's chapter-page layout from the owner's rework screenshot (`notes/screen2-notes.md`): dark canvas, chrome-free "BLOG / title / TraceLine / meta" header, and an "ON THIS PAGE" sidebar whose active item carries the accent + a left marker. The **TraceLine** — an oscilloscope-style SVG stroke that draws itself across the hero and under each article H1 — is the one signature interaction: the latency trace, the literal thing Roby reduced from 10 s to 2 s at work. One aesthetic, committed end to end: "a near-black, sans-led personal site with one accent used only where it means something."
 
 ---
 
@@ -58,21 +56,21 @@ Selection:    accent-600 background, --paper-0 text.
 
 | Role | Family | Weight / style | Notes |
 |---|---|---|---|
-| Display / H1 | **Fraunces** (variable) | 600, `-0.02em`, optical size auto | Editorial high-contrast serif — deliberately *not* a grotesque sans like the inspirations |
-| H2–H3 | Fraunces | 500–600, tight | Post/ledger section heads |
-| Body | **IBM Plex Sans** | 400, 1.75 lh | Neutral "instrument/document" sans, not Inter, not system |
-| Labels / dates / metadata | **IBM Plex Mono** | 400–500, 10–12 px, `+0.12em`, uppercase | The constant micro-label voice (inherits the inspirations' convention, own face) |
+| Display / H1 | **Space Grotesk** (variable) | 600, `-0.02em` | Modern grotesque display — R2 dropped the original Fraunces serif; same sans-led discipline as the inspirations |
+| H2–H3 | Space Grotesk | 600, tight | Post / résumé section heads |
+| Body | **IBM Plex Sans** | 400, 1.75 lh | Neutral document sans |
+| Labels / dates / metadata | **IBM Plex Mono** | 400–500, 10–12 px, `+0.12em`, uppercase | The constant micro-label voice |
 | Code + inline code | IBM Plex Mono | 400 | Inline code: accent-100 wash + ink, mono 0.9em |
-| Emphasis | Fraunces italic | 400 | Pull-quotes & lead paragraphs (echoes Earendil's italic *without* copying: light theme, serif, only for emphasis) |
+| Emphasis | IBM Plex Sans italic | 400 | Pull-quotes & lead paragraphs — no serif anywhere in the system (R2) |
 
-Fluid scale (`clamp`):
+Fluid scale (`clamp`, matches `src/styles/tokens.css`):
 ```
 --step-0: 1.0625rem/1.75    body
 --step-1: 1.25rem
 --step-2: 1.5rem
 --step-3: 2rem
---step-4: clamp(1.75rem, 4vw, 2.75rem)     h2
---display: clamp(3rem, 8vw, 6.75rem)       h1
+--step-4: clamp(1.75rem, 4vw, 2.75rem)     h2 / post title
+--display: clamp(3.5rem, 10vw, 8rem)       h1 / home hero
 --step--1: 0.8125rem                        small / caption
 --label: 0.6875rem                          mono caps labels
 ```
@@ -114,15 +112,22 @@ A11y baseline: skip-link, `header/main/footer` landmarks, one H1 per page, real 
 ### 4.1 Routes (pages)
 
 ```
-/               Home — hero (H1 "Engineering AI systems that answer in seconds"),
-                TraceLine, latest 3 posts, résumé teaser strip
-/blog           Journal index — ledger table of all posts (PostCard rows), per-tag
-                static pages /blog/tags/[tag] (static-host-safe, zero JS)
-/blog/[slug]    Post template — prose layout, TraceLine, reading time, tags,
-                prev/next, optional math/mermaid per frontmatter
-/resume         Résumé — sections seeded from data (Work, Projects, Skills, Awards, Education)
+/               Home (R1) — ONE SCREEN: mono micro-label, huge "Roby Attoillah",
+                TraceLine, BLOG · ABOUT links. No hero paragraph, no scroll.
+/blog           Journal index — ledger table (PostCard rows) under a mono
+                POST / DATE header, paginated via [...page].astro
+                (paginate() with pageSize 10; page 1 serves /blog/).
+                Per-tag static pages removed (R1).
+/blog/[slug]    Post template (R2) — two-column: prose left, sticky "ON THIS
+                PAGE" TOC sidebar right (h2/h3 anchor links + IO active
+                highlight); <details class="toc-mobile"> below 1024px.
+                TraceLine, reading time, prev/next, math/mermaid per
+                frontmatter. Tags removed (R1).
+/about          About — résumé sections seeded from data (Work, Projects,
+                Skills, Awards, Education, contact). /about replaces
+                /resume (R1); the page label is "About".
 /rss.xml        Generated RSS (posts collection)
-/404            Styled 404 (mono caps "NO SUCH MEASUREMENT")
+/404            Styled 404 — "Page not found" + link home
 ```
 
 ### 4.2 Content collection schemas (`src/content/config.ts`, zod)
@@ -269,6 +274,7 @@ Prereq: repo strategy per §9 decision 1 (replace-in-place on `byrocuy.github.io
 - **M4 — Blog index.** `content/posts` collection + seeds §5.2 (2 posts); `/blog` with PostCard ledger, per-tag static pages, RSS endpoint. **Acceptance:** seed posts list with dates/tags/descriptions; empty-state renders; `/rss.xml` parses; per-tag static pages built for every distinct tag, each rendering only its tag's posts.
 - **M5 — Post template.** `/blog/[slug]` with prose layout, TraceLine, reading time, prev/next, breadcrumb-ish meta; `mdx/index.ts` map + `Callout`, `CodeBlock`, `Mermaid`, `Math` (katex CSS); one seed post exercises **every** feature (§6 grid). **Acceptance:** demo post renders tables, callouts, Shiki code w/ line highlights, inline code, blockquote, image, math, mermaid; Lighthouse a11y pass ≥ 90; no layout shift on fonts.
 - **M6 — Deployment + polish.** `deploy.yml` run on real repo (per §9 answers); 404 page; sitemap; og-image; `_styleguide` removed; Cloudflare path documented in README. **Acceptance:** live at `byrocuy.github.io`; smoke checks §7.3 green; `BASE_PATH` build verified; final Lighthouse perf ≥ 95 (static, zero runtime JS beyond optional mermaid).
+- **R1–R2 rework (owner-directed):** dark theme, sparse home, TOC sidebar — see commits.
 
 ---
 

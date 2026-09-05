@@ -1,30 +1,20 @@
 ---
-// TRACE PAPER PostCard (§3.4) — ledger row.
-// mono date (left) · Fraunces title + one-line description · tag
-// badges (right); hover = hairline→accent border + TraceLine
-// underline. Instantiated from the posts collection on / (latest)
-// and /blog (journal ledger).
-//
-// When `tagHref` is provided the badges become links to the per-tag
-// static pages /blog/tags/[tag] (journal + tag index pages) — zero
-// client JS, static-host safe.
+// Personal site PostCard — ledger row (R1).
+// mono date (left) · Space Grotesk title + one-line description;
+// hover = hairline→accent border + TraceLine underline. No tags.
 import TraceLine from './TraceLine.astro';
-import Badge from './Badge.astro';
 
 interface Props {
   title: string;
   description: string;
   date: Date;
-  tags: string[];
   /** Minutes, computed by the caller from the post body (~220 wpm). */
   readingTime?: number;
   /** Absolute path to the post page, e.g. `/blog/ttft-not-price/`. */
   href: string;
-  /** When present, render each tag as a link to its per-tag page. */
-  tagHref?: (tag: string) => string;
 }
 
-const { title, description, date, tags, readingTime, href, tagHref } = Astro.props;
+const { title, description, date, readingTime, href } = Astro.props;
 
 // Instrument-style date: YYYY-MM-DD (en-CA locale), tabular numerals.
 const dateStr = date.toLocaleDateString('en-CA');
@@ -40,24 +30,4 @@ const iso = date.toISOString();
     <span class="post-card__desc">{description}</span>
     <TraceLine label={`Trace — ${title}`} />
   </span>
-  <span class="post-card__tags">
-    {tags.map((tag) =>
-      tagHref ? (
-        <a class="badge" href={tagHref(tag)}>{tag}</a>
-      ) : (
-        <Badge label={tag} />
-      ),
-    )}
-  </span>
 </a>
-
-<style>
-  .post-card a.badge {
-    text-decoration: none;
-  }
-  .post-card a.badge:hover,
-  .post-card a.badge:focus-visible {
-    color: var(--accent-600);
-    border-color: var(--accent-600);
-  }
-</style>

@@ -1,4 +1,4 @@
-// TRACE PAPER MDX component map (§6) — the fixed, globally-registered set
+// Personal site MDX component map — the fixed, globally-registered set
 // applied to every post via <Content components={components} /> (official
 // Astro MDX pattern). Articles stay plain Markdown + two opt-in components.
 //

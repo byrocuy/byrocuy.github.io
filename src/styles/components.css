@@ -1,8 +1,7 @@
 /* ============================================================
-   TRACE PAPER — components
-   PLAN §3.3 · §3.4 · §3.5
-   Nav · Footer · hero · Ledger/PostCard primitives · Badge ·
-   Callout-ready classes · TraceLine. Depends on tokens.css.
+   Personal site — components (R1)
+   Nav · Footer · home · Ledger/PostCard primitives · Badge ·
+   Callout-ready classes · TraceLine · Résumé. Depends on tokens.css.
    ============================================================ */
 
 /* ——— Micro utilities ——— */
@@ -27,7 +26,9 @@
 }
 
 /* ============================================================
-   Nav — sticky, hairline bottom (§3.4)
+   Nav — sticky, hairline bottom (R1)
+   Left: mono-caps wordmark ONLY. Right: mono-caps links
+   (Blog / About). No icons — socials live on the About page.
    ============================================================ */
 .nav {
   position: sticky;
@@ -47,7 +48,7 @@
   padding: var(--s2) var(--s4);
 }
 
-/* left: trace-spike glyph in a bordered square + wordmark */
+/* left: mono-caps wordmark */
 .brand {
   display: inline-flex;
   align-items: center;
@@ -56,35 +57,11 @@
   text-decoration: none;
 }
 
-.brand-mark {
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  width: 30px;
-  height: 30px;
-  border: 1px solid var(--hairline-2);
-  border-radius: var(--r-sm);
-  color: var(--accent-500); /* currentColor default for the trace glyph */
-}
-
-.brand-mark svg {
-  width: 18px;
-  height: 18px;
-}
-
-.brand-mark .bm-box {
-  stroke: var(--hairline-2);
-}
-
-.brand-mark .bm-trace {
-  stroke: var(--accent-500);
-}
-
 .brand-word {
   font-family: var(--font-mono);
-  font-size: var(--label);
+  font-size: 0.75rem;
   font-weight: 500;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--ink-900);
   white-space: nowrap;
@@ -121,9 +98,9 @@
   color: var(--ink-900);
 }
 
-/* §3.1 contrast rule: aria-current page mark is accent-600, not 500 */
+/* §contrast rule: aria-current page mark is the lighter accent-400 */
 .nav-links a[aria-current='page'] {
-  color: var(--accent-600);
+  color: var(--accent-400);
 }
 
 .nav-links .nav-icon {
@@ -140,7 +117,7 @@
 }
 
 /* ============================================================
-   Footer — mono caps strip (§3.4)
+   Footer — minimal mono strip (R1): "© 2026 ROBY ATTOILLAH"
    ============================================================ */
 .footer {
   border-top: 1px solid var(--hairline);
@@ -151,7 +128,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  justify-content: space-between;
+  justify-content: center;
   gap: var(--s2) var(--s4);
   max-width: var(--measure-page);
   margin-inline: auto;
@@ -159,51 +136,80 @@
   font-family: var(--font-mono);
   font-size: var(--label);
   font-weight: 400;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink-500);
 }
 
-.footer .top-link {
-  color: var(--ink-500);
-  text-decoration: none;
+/* ============================================================
+   Home — one screen, stencil-style sparse hero (R1)
+   Centered stack: micro-label · huge name · TraceLine · links row.
+   min-height 100svh, no scroll.
+   ============================================================ */
+.home {
+  display: grid;
+  place-items: center;
+  min-height: 100svh;
+  padding: var(--s6) var(--s4);
+  text-align: center;
 }
 
-.footer .top-link:hover {
+.home__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.home__kick {
+  margin-bottom: var(--s4);
+  color: var(--ink-500);
+}
+
+.home__name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--display);
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+  color: var(--ink-900);
+  text-wrap: balance;
+}
+
+.home .trace-line {
+  margin-top: var(--s6);
+  width: min(100%, 32rem);
+  margin-inline: auto;
+}
+
+.home__links {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--s3);
+  margin-top: var(--s6);
+  font-family: var(--font-mono);
+  font-size: var(--label);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.home__links a {
+  color: var(--ink-500);
+  text-decoration: none;
+  transition: color 160ms ease;
+}
+
+.home__links a:hover,
+.home__links a:focus-visible {
   color: var(--ink-900);
 }
 
-/* ============================================================
-   Hero — dot-grid applied via .dot-grid utility (§3.3)
-   ============================================================ */
-.hero {
-  padding: var(--s8) 0 var(--s7);
-  border-bottom: 1px solid var(--hairline);
-  background-color: var(--paper-0);
-}
-
-.hero-inner {
-  max-width: var(--measure-page);
-  margin-inline: auto;
-  padding-inline: var(--s4);
-}
-
-.hero h1 {
-  max-width: 20ch;
-}
-
-.hero .trace-line {
-  margin-top: var(--s5);
-  max-width: 30rem;
-}
-
-.hero-note {
-  display: block;
-  margin-top: var(--s5);
+.home__dot {
+  color: var(--ink-300);
 }
 
 /* ============================================================
-   Ledger + PostCard primitives (§3.4) — rows instantiated in M4
+   Ledger + PostCard primitives (R1) — rows instantiated in M4
    ============================================================ */
 .ledger {
   border-top: 1px solid var(--hairline-2);
@@ -211,7 +217,7 @@
 
 .ledger__head {
   display: grid;
-  grid-template-columns: 6.5rem 1fr 10rem;
+  grid-template-columns: 6.5rem 1fr;
   gap: var(--s4);
   padding: var(--s2) 0;
   border-bottom: 1px solid var(--hairline);
@@ -225,7 +231,7 @@
 
 .post-card {
   display: grid;
-  grid-template-columns: 6.5rem 1fr 10rem;
+  grid-template-columns: 6.5rem 1fr;
   gap: var(--s4);
   align-items: baseline;
   padding: var(--s5) 0;
@@ -241,7 +247,7 @@
 }
 
 .post-card:focus-visible {
-  border-left-color: var(--accent-600);
+  border-left-color: var(--accent-400);
 }
 
 .post-card__date {
@@ -301,20 +307,10 @@
   opacity: 1;
 }
 
-.post-card__tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--s1);
-  justify-content: flex-end;
-}
-
 @media (max-width: 40rem) {
   .post-card {
     grid-template-columns: 1fr;
     gap: var(--s1);
-  }
-  .post-card__tags {
-    justify-content: flex-start;
   }
   .ledger__head {
     display: none;
@@ -322,7 +318,7 @@
 }
 
 /* ============================================================
-   Badge (§3.4) — mono caps 11px, hairline border, --r-sm
+   Badge — mono caps 11px, hairline border, --r-sm (dark re-tuned)
    ============================================================ */
 .badge {
   display: inline-block;
@@ -341,18 +337,18 @@
 }
 
 .badge--accent {
-  color: var(--accent-600); /* §3.1: text is accent-600, hairline stays neutral */
+  color: var(--accent-400); /* text accent = lighter vermilion on dark */
 }
 
 /* ============================================================
-   Callout-ready classes (§3.4) — Callout.astro lands in M5
+   Callout-ready classes — Callout.astro (dark re-tuned)
    ============================================================ */
 .callout {
   display: flex;
   gap: var(--s4);
   align-items: flex-start;
   padding: var(--s4) var(--s5);
-  background: var(--accent-100); /* wash */
+  background: var(--accent-100); /* vermilion wash on dark */
   border: 1px dashed var(--hairline-2);
   border-left: 3px solid var(--accent-500); /* left accent bar */
   border-radius: 0 var(--r-lg) var(--r-lg) 0;
@@ -382,7 +378,7 @@
   font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--accent-600); /* §3.1 contrast rule */
+  color: var(--accent-400); /* text accent on dark */
 }
 
 .callout__body {
@@ -415,14 +411,14 @@
   color: var(--warn);
 }
 .callout--metric {
-  border-left-color: var(--accent-600);
+  border-left-color: var(--accent-400);
 }
 .callout--metric .callout__glyph,
 .callout--metric .callout__title {
-  color: var(--accent-600);
+  color: var(--accent-400);
 }
 
-/* metric: big Fraunces number + mono caps label */
+/* metric: big Space Grotesk number + mono caps label */
 .callout--metric .callout__value {
   font-family: var(--font-display);
   font-size: var(--step-4);
@@ -444,12 +440,12 @@
 }
 
 /* ============================================================
-   MDX rich formatting (M5) — CodeBlock · line highlights · Mermaid
+   MDX rich formatting — CodeBlock · line highlights · Mermaid
    ============================================================ */
-/* CodeBlock §3.4 — dark ink panel + mono-caps header strip. The inner
-   <pre> is the Shiki output (class astro-code / language-*), so existing
-   prose.css rules keep tokens unstyled; the panel owns the border + radius
-   and the .highlighted line wash lives on the ink background. */
+/* CodeBlock — dark panel + mono-caps header strip. The inner <pre>
+   is the Shiki output (class astro-code / language-*), so existing
+   prose.css rules keep tokens unstyled; the panel owns the border +
+   radius and the .highlighted line wash lives on the ink background. */
 .codeblock {
   margin: var(--s6) 0;
   background: var(--code-bg);
@@ -492,7 +488,7 @@
 }
 
 /* line highlights from fence meta {1,3-5} (transformerMetaHighlight) —
-   dry accent wash + a 2px vermilion left tick, ink-panel edition */
+   dry vermilion wash + a 2px left tick, dark-panel edition */
 .prose .codeblock .line.highlighted {
   background: color-mix(in srgb, var(--accent-100) 13%, transparent);
   box-shadow: inset 2px 0 0 var(--accent-500);
@@ -565,7 +561,7 @@
 }
 
 /* ============================================================
-   Résumé page (§3.4) — ResumeSection · MetricBadge · entries — M3
+   Résumé page — ResumeSection · MetricBadge · entries
    Seeded from src/content (resume/profile.yaml + projects/*.yaml).
    ============================================================ */
 .resume-head {
@@ -602,12 +598,12 @@
 }
 
 .resume-contact a {
-  color: var(--accent-600); /* §3.1 contrast rule: links are accent-600 */
+  color: var(--accent-400); /* links are the lighter vermilion on dark */
   text-decoration: none;
 }
 
 .resume-contact a:hover {
-  color: var(--accent-700);
+  color: var(--accent-300);
 }
 
 /* ——— Summary lead + open-to-work line (M6c, from legacy about.md) ——— */
@@ -618,10 +614,8 @@
 
 .resume-summary p {
   max-width: 60ch;
-  font-family: var(--font-display); /* Fraunces lead — echoes the prose lead */
-  font-style: italic;
+  font-family: var(--font-body);
   font-weight: 400;
-  font-optical-sizing: auto;
   font-size: var(--step-1);
   line-height: 1.45;
   color: var(--ink-700);
@@ -634,7 +628,6 @@
 .resume-open {
   margin-top: var(--s5);
   font-family: var(--font-display);
-  font-style: italic;
   font-weight: 500;
   font-size: var(--step-1);
   color: var(--ink-900);
@@ -654,9 +647,9 @@
   flex-direction: column;
   gap: var(--s1);
   padding: var(--s3) var(--s4) var(--s2);
-  background-color: var(--paper-0);
+  background-color: var(--paper-1);
   border: 1px solid var(--hairline);
-  border-top: 3px solid var(--accent-500); /* trace accent — decorative-only (§3.1) */
+  border-top: 3px solid var(--accent-500); /* trace accent — decorative-only */
   border-radius: var(--r-md);
 }
 
@@ -678,7 +671,7 @@
   color: var(--ink-500);
 }
 
-/* ——— ResumeSection: mono index + Fraunces H2 + hairline rule ——— */
+/* ——— ResumeSection: mono index + Space Grotesk H2 + hairline rule ——— */
 .resume-section {
   margin-top: var(--s7);
   scroll-margin-top: var(--s6);

@@ -118,7 +118,7 @@ Each pass looked cheap in isolation; summed, they were ~2s of the budget. We del
 
 ## After
 
-![First-token latency before and after — two traces on instrument paper](/latency-before-after.svg)
+![First-token latency before and after — P50 dropped from 10.5s to 2.5s](/latency-before-after.svg)
 
 Same model, same provider, same box: P50 first-token went from 10–12s to 2–3s. The remaining two seconds are mostly inference and network — the parts that actually cost money to improve. We streamed, we bootstrapped at boot, we parallelized, and we deleted; in that order, deletion gave the best seconds-per-engineer-hour.
 

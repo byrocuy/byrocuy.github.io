@@ -1,7 +1,7 @@
 ---
-// TRACE PAPER post route — /blog/[slug] (PLAN §4.1, M5).
+// Personal site post route — /blog/[slug].
 // Builds one static page per non-draft post via the content layer, renders
-// it inside PostLayout with the §6 MDX component map, and computes the
+// it inside PostLayout with the MDX component map, and computes the
 // reading time (word count / 220 wpm) and prev/next links (pubDate-ordered)
 // from the collection.
 //
@@ -48,7 +48,14 @@ const idx = allPosts.findIndex((p) => p.id === post.id);
 const prev = idx > 0 ? allPosts[idx - 1] : undefined;
 const next = idx >= 0 && idx < allPosts.length - 1 ? allPosts[idx + 1] : undefined;
 
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
+
+// R2 "ON THIS PAGE" outline — h2/h3 headings with their anchor slugs,
+// straight from Astro's official render() headings API (the rendered
+// HTML's heading ids match these slugs; verified at R2 acceptance).
+const tocHeadings = headings
+  .filter((h) => h.depth >= 2 && h.depth <= 3 && h.text.trim() !== '')
+  .map((h) => ({ depth: h.depth, slug: h.slug, text: h.text }));
 const canonical = new URL(`/blog/${post.id}/`, Astro.site ?? 'https://byrocuy.github.io');
 ---
 <PostLayout
@@ -57,9 +64,9 @@ const canonical = new URL(`/blog/${post.id}/`, Astro.site ?? 'https://byrocuy.gi
   pubDate={post.data.pubDate}
   updated={post.data.updated}
   readingTime={readingTime}
-  tags={post.data.tags}
   math={post.data.extensions.math}
   canonical={canonical}
+  headings={tocHeadings}
   prev={prev ? { title: prev.data.title, href: `/blog/${prev.id}/` } : undefined}
   next={next ? { title: next.data.title, href: `/blog/${next.id}/` } : undefined}
 >

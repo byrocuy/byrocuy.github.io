@@ -1,11 +1,10 @@
-# TRACE PAPER
+# Roby Attoillah — personal site
 
-**TRACE PAPER — the measurement logbook (and résumé) of Roby Attoillah, an AI
-engineer.** A light, warm *instrument-paper* editorial site: matte porcelain
-paper, ink-black Fraunces serif type, a single signal-vermilion accent, and a
-fine plotter dot-grid texture. The signature **TraceLine** — an oscilloscope
-SVG stroke that draws itself under every H1 — renders Roby's P50-latency cut
-(10 s → 2 s) as a motif. Static-first: blog + résumé, zero runtime JS.
+**Personal site of Roby Attoillah, an AI engineer.** A dark-first, sparse
+personal site: near-black canvas, Space Grotesk display type over an IBM Plex
+Sans body, a single signal-vermilion accent, and the signature **TraceLine** —
+an oscilloscope SVG stroke that draws itself under the home title. Static-first:
+blog + about, zero runtime JS.
 
 ## Tech stack
 

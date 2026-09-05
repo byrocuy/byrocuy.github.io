@@ -29,14 +29,3 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
-
-# leftovers from the Jekyll era (M6c swap) — kept on disk, never tracked
-.jekyll-cache/
-.jekyll-metadata
-_site/
-local/
-.pi/
-AGENTS.md
-.ignore
-_sass/vendors
-assets/js/dist

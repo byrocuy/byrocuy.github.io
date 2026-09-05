@@ -1,14 +1,14 @@
 ---
-// TRACE PAPER post template — wraps every /blog/[slug] page (PLAN §4.1, M5).
-// Extends BaseLayout: mono-caps "JOURNAL" breadcrumb, Fraunces H1 with the
-// signature TraceLine directly beneath it (label = post title), a mono meta
-// row (pubDate / updated / reading time), tag Badges linking to the per-tag
-// static pages, and prev/next post links (pubDate-ordered) at the bottom.
+// Personal site post template — wraps every /blog/[slug] (R1).
+// Extends BaseLayout: mono-caps "Blog" breadcrumb, Space Grotesk H1
+// with the signature TraceLine directly beneath it (label = post title),
+// a mono meta row (pubDate / updated / reading time), and prev/next
+// post links (pubDate-ordered) at the bottom.
 //
-// Math (§6): katex CSS is imported HERE and only here — and only when the
-// post opts in (extensions.math). The `?url` + named-slot trick keeps the
-// stylesheet a plain <link> in <head> on exactly the pages that need it;
-// non-post pages (BaseLayout alone) never pay for math CSS.
+// Math: katex CSS is imported HERE and only here — and only when the
+// post opts in (extensions.math). The `?url` + named-slot trick keeps
+// the stylesheet a plain <link> in <head> on exactly the pages that
+// need it; non-post pages (BaseLayout alone) never pay for math CSS.
 import BaseLayout from './BaseLayout.astro';
 import TraceLine from '../components/TraceLine.astro';
 
@@ -19,11 +19,13 @@ interface Props {
   updated?: Date;
   /** Minutes, computed from the post body at ~220 wpm (word count). */
   readingTime: number;
-  tags: string[];
   /** extensions.math — gates the katex stylesheet <link>. */
   math?: boolean;
   /** Absolute canonical URL handed to BaseLayout (og basics too). */
   canonical?: string | URL;
+  /** h2/h3 outline for the "ON THIS PAGE" TOC — desktop sidebar +
+      mobile <details>. Slugs match the rendered heading ids (R2). */
+  headings?: { depth: number; slug: string; text: string }[];
   prev?: { title: string; href: string };
   next?: { title: string; href: string };
 }
@@ -34,11 +36,11 @@ const {
   pubDate,
   updated,
   readingTime,
-  tags,
   math = false,
   canonical,
   prev,
   next,
+  headings = [],
 } = Astro.props;
 
 const katexCss = math ? (await import('katex/dist/katex.min.css?url')).default : undefined;
@@ -48,13 +50,11 @@ const dateStr = pubDate.toLocaleDateString('en-CA');
 const updatedStr = updated ? updated.toLocaleDateString('en-CA') : undefined;
 const iso = pubDate.toISOString();
 const updatedIso = updated ? updated.toISOString() : undefined;
-
-const tagHref = (tag: string) => `/blog/tags/${encodeURIComponent(tag.toLowerCase())}/`;
 ---
 <BaseLayout
-  title={`${title} — TRACE PAPER`}
+  title={`${title} — Roby Attoillah`}
   description={description}
-  current="journal"
+  current="blog"
   ogType="article"
   canonical={canonical}
 >
@@ -63,7 +63,7 @@ const tagHref = (tag: string) => `/blog/tags/${encodeURIComponent(tag.toLowerCas
   <article class="post page">
     <header class="post__head">
       <nav class="post__crumb" aria-label="Breadcrumb">
-        <a class="post__crumb-link" href="/blog/">Journal</a>
+        <a class="post__crumb-link" href="/blog/">Blog</a>
         <span class="post__crumb-sep" aria-hidden="true">/</span>
         <span class="post__crumb-cur">Post</span>
       </nav>
@@ -82,20 +82,44 @@ const tagHref = (tag: string) => `/blog/tags/${encodeURIComponent(tag.toLowerCas
         <span class="post__meta-sep" aria-hidden="true">·</span>
         <span class="tnum">{readingTime} min read</span>
       </p>
-
-      {tags.length > 0 && (
-        <ul class="post__tags">
-          {tags.map((tag) => (
-            <li class="post__tag">
-              <a class="badge" href={tagHref(tag)}>{tag}</a>
-            </li>
-          ))}
-        </ul>
-      )}
     </header>
 
-    <div class="prose">
-      <slot />
+    <div class="post-layout">
+      <div class="post-main">
+        {headings.length > 0 && (
+          <details class="toc-mobile">
+            <summary class="toc-mobile__summary mono-label">On this page</summary>
+            <nav class="toc-mobile__nav" aria-label="On this page">
+              <ol class="toc-mobile__list">
+                {headings.map((h) => (
+                  <li class:list={[`toc-item toc-item--h${h.depth}`]}>
+                    <a href={`#${h.slug}`}>{h.text}</a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          </details>
+        )}
+
+        <div class="prose">
+          <slot />
+        </div>
+      </div>
+
+      {headings.length > 0 && (
+        <aside class="post-toc" aria-label="On this page">
+          <p class="post-toc__label mono-label">ON THIS PAGE</p>
+          <nav class="post-toc__nav" aria-label="On this page">
+            <ol class="post-toc__list">
+              {headings.map((h) => (
+                <li class:list={[`toc-item toc-item--h${h.depth}`]}>
+                  <a class="post-toc__link" href={`#${h.slug}`}>{h.text}</a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        </aside>
+      )}
     </div>
 
     <nav class="post__pager" aria-label="Post navigation">
@@ -119,12 +143,61 @@ const tagHref = (tag: string) => `/blog/tags/${encodeURIComponent(tag.toLowerCas
   </article>
 </BaseLayout>
 
+<script>
+  // R2 "ON THIS PAGE" scrollspy.
+  // An IntersectionObserver watches the post's h2/h3 headings against a
+  // thin "reading band" near the top of the viewport; whichever heading
+  // crosses it (last one wins when several are in the band) becomes the
+  // active TOC link — accent color + left marker. No smooth-scroll
+  // hijack and no JS animation: anchor jumps rely on the CSS
+  // `scroll-behavior: smooth`, which reduced-motion users suppress.
+  const toc = document.querySelector('.post-toc');
+  if (toc) {
+    const links = Array.from(toc.querySelectorAll<HTMLAnchorElement>('a[href^="#"]'));
+    const elements = links
+      .map((link) => document.getElementById((link.getAttribute('href') ?? '').slice(1)))
+      .filter((el): el is HTMLElement => el !== null);
+
+    if (elements.length > 0 && 'IntersectionObserver' in window) {
+      let activeIndex = -1;
+      const apply = () => {
+        links.forEach((link, i) => {
+          const active = i === activeIndex;
+          link.classList.toggle('is-active', active);
+          if (active) link.setAttribute('aria-current', 'true');
+          else link.removeAttribute('aria-current');
+        });
+      };
+      const observer = new IntersectionObserver(
+        (entries) => {
+          let last = -1;
+          for (const entry of entries) {
+            if (!entry.isIntersecting) continue;
+            const i = elements.indexOf(entry.target as HTMLElement);
+            if (i > last) last = i;
+          }
+          if (last !== -1 && last !== activeIndex) {
+            activeIndex = last;
+            apply();
+          }
+        },
+        // Band = viewport top 20–25%; boxes crossing it are "current".
+        // Scrolling down activates on top-entry; scrolling back up
+        // re-activates on bottom re-entry — both directions, no dead zone.
+        { rootMargin: '-20% 0px -75% 0px', threshold: 0 },
+      );
+      elements.forEach((heading) => observer.observe(heading));
+      apply();
+    }
+  }
+</script>
+
 <style>
   .post {
     max-width: var(--measure-page);
   }
 
-  /* ——— Breadcrumb: mono-caps, home link accent-600 (§3.1 contrast rule) ——— */
+  /* ——— Breadcrumb: mono-caps, home link lighter-vermilion ——— */
   .post__crumb {
     display: flex;
     align-items: baseline;
@@ -137,17 +210,17 @@ const tagHref = (tag: string) => `/blog/tags/${encodeURIComponent(tag.toLowerCas
     color: var(--ink-500);
   }
   .post__crumb-link {
-    color: var(--accent-600);
+    color: var(--accent-400);
     text-decoration: none;
   }
   .post__crumb-link:hover {
-    color: var(--accent-700);
+    color: var(--accent-300);
   }
   .post__crumb-sep {
     color: var(--ink-300);
   }
 
-  /* ——— H1: Fraunces, article size (step-4 fluid token), TraceLine beneath ——— */
+  /* ——— H1: Space Grotesk, article size (step-4 fluid token), TraceLine beneath ——— */
   .post__head {
     padding-bottom: var(--s5);
     border-bottom: 1px solid var(--hairline);
@@ -180,24 +253,6 @@ const tagHref = (tag: string) => `/blog/tags/${encodeURIComponent(tag.toLowerCas
     color: var(--ink-300);
   }
 
-  /* ——— Tags: Badge links to static per-tag pages ——— */
-  .post__tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--s1);
-    margin-top: var(--s4);
-    padding: 0;
-    list-style: none;
-  }
-  .post__tags a.badge {
-    text-decoration: none;
-  }
-  .post__tags a.badge:hover,
-  .post__tags a.badge:focus-visible {
-    color: var(--accent-600);
-    border-color: var(--accent-600);
-  }
-
   /* H1 sits outside .prose, so the first heading inside the body needs a
      small top nudge to keep rhythm after the header rule. */
   .prose > h2:first-child {
@@ -223,7 +278,7 @@ const tagHref = (tag: string) => `/blog/tags/${encodeURIComponent(tag.toLowerCas
   }
   .post__pager-link:hover,
   .post__pager-link:focus-visible {
-    border-color: var(--accent-600);
+    border-color: var(--accent-400);
   }
   .post__pager-link--next {
     text-align: right;
@@ -249,6 +304,160 @@ const tagHref = (tag: string) => `/blog/tags/${encodeURIComponent(tag.toLowerCas
     }
     .post__pager-link--next {
       text-align: left;
+    }
+  }
+
+  /* ============================================================
+     R2 — two-column article + sticky "ON THIS PAGE" sidebar.
+     Desktop (>=1024px): prose (~42rem measure) left, sticky TOC
+     right (~17rem). Mobile: <details class="toc-mobile"> above the
+     body instead — no hamburger, no JS needed for it.
+     Active item = accent color + small left marker (IO scrollspy).
+     ============================================================ */
+  .post-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s5);
+  }
+
+  .post-main {
+    min-width: 0;
+  }
+
+  /* ——— Mobile TOC: plain <details>, no JS ——— */
+  .toc-mobile {
+    margin-bottom: var(--s5);
+    border: 1px solid var(--hairline);
+    border-radius: var(--r-md);
+    background: var(--paper-1);
+  }
+
+  .toc-mobile__summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s3);
+    padding: var(--s3) var(--s4);
+    cursor: pointer;
+    list-style: none;
+    color: var(--ink-700);
+  }
+
+  .toc-mobile__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .toc-mobile__summary::after {
+    content: '+';
+    color: var(--ink-300);
+    font-size: var(--step-1);
+    line-height: 1;
+  }
+
+  .toc-mobile[open] .toc-mobile__summary::after {
+    content: '–';
+  }
+
+  .toc-mobile__nav {
+    padding: var(--s2) var(--s4) var(--s3);
+    border-top: 1px solid var(--hairline);
+  }
+
+  .toc-mobile__list {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .toc-mobile .toc-item a {
+    display: block;
+    padding: var(--s1) 0;
+    font-size: var(--step--1);
+    color: var(--ink-700);
+    text-decoration: none;
+  }
+
+  .toc-mobile .toc-item a:hover {
+    color: var(--ink-900);
+  }
+
+  .toc-mobile .toc-item--h3 a {
+    padding-left: var(--s4);
+  }
+
+  /* ——— Desktop sidebar: sticky within the taller prose column ——— */
+  .post-toc {
+    position: sticky;
+    top: 2.5rem;
+    max-height: calc(100dvh - 5rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: var(--s1) 0;
+    border-left: 1px solid var(--hairline);
+  }
+
+  .post-toc__label {
+    margin: 0 0 var(--s3) var(--s3);
+  }
+
+  .post-toc__list {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .toc-item {
+    margin: 0;
+  }
+
+  .post-toc__link {
+    display: block;
+    margin-left: -1px; /* active bar sits on the TOC rule */
+    padding: var(--s1) var(--s2);
+    border-left: 2px solid transparent;
+    font-family: var(--font-body);
+    font-size: var(--step--1);
+    line-height: 1.45;
+    color: var(--ink-500);
+    text-decoration: none;
+    transition: color 160ms ease, border-color 160ms ease;
+  }
+
+  .post-toc__link:hover {
+    color: var(--ink-900);
+  }
+
+  /* nested h3 — indented under their h2 */
+  .toc-item--h3 .post-toc__link {
+    padding-left: var(--s5);
+  }
+
+  /* active section: accent color + small left marker */
+  .post-toc__link.is-active,
+  .post-toc__link[aria-current='true'] {
+    color: var(--accent-400);
+    border-left-color: var(--accent-400);
+  }
+
+  @media (min-width: 64rem) {
+    .post-layout {
+      grid-template-columns: minmax(0, var(--measure-prose)) 17rem;
+      column-gap: var(--s7);
+      align-items: start;
+      justify-content: center;
+    }
+    .toc-mobile {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .post-toc__link {
+      transition: none;
     }
   }
 </style>

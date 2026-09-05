@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-  <!-- TRACE PAPER trace-mark: trace-spike glyph in a bordered square,
-       matching the Nav brand mark (§3.4). -->
-  <rect x="2.5" y="2.5" width="19" height="19" rx="3.5" stroke="#C8C0AA" stroke-width="1.5" />
+  <!-- Personal-site trace-mark: trace-spike glyph in a bordered square,
+       matching the TraceLine signature. Hairline border + vermilion. -->
+  <rect x="2.5" y="2.5" width="19" height="19" rx="3.5" stroke="#33333C" stroke-width="1.5" />
   <path
     d="M5.5 16.5 C8.5 16.5, 9.5 11.5, 12 11.5 C14 11.5, 15 14.5, 16.2 13.2 L17.6 13.2 v2.2 h2.2 v-2.2"
-    stroke="#E6492B"
+    stroke="#FF5C3B"
     stroke-width="1.5"
     stroke-linecap="round"
   />

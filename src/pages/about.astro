@@ -1,6 +1,7 @@
 ---
-// TRACE PAPER résumé page — /resume (PLAN §4.1, §3.4).
-// Seeded entirely from the content collections (M3):
+// Personal site about page — /about (R1; was /resume).
+// Content unchanged for now (R2/R3 decide trim) — still seeded from the
+// content collections:
 //   profile.yaml    → contact / work / skills / awards / education
 //   projects/*.yaml → project entries (regional-sentiment.yaml)
 // astro check validates both files against the schemas in config.ts.
@@ -20,14 +21,14 @@ const { contact, summary, work, skills, awards, education, note } = profile.data
 const [project] = await getCollection('projects');
 ---
 <BaseLayout
-  title={`Résumé — ${contact.name}`}
-  current="resume"
-  description={`Résumé of ${contact.name} — Associate AI Engineer slicing P50 first-token latency from 10s to 2s, 75% AI-resolved sessions, 41 Siloam hospital units, IDR 26.4B+, UGM graduate.`}
+  title={`About — ${contact.name}`}
+  current="about"
+  description={`About ${contact.name} — AI engineer. Blog and about.`}
 >
   <div class="page">
     <!-- ——— Header: name + contact strip (§5.1 header row) ——— -->
     <header class="resume-head">
-      <p class="mono-label">Résumé · Measurement Logbook</p>
+      <p class="mono-label">About</p>
       <h1>{contact.name}</h1>
       <TraceLine label={`Latency trace — ${contact.name}`} />
       {note && <p class="resume-open">{note}</p>}
@@ -52,14 +53,14 @@ const [project] = await getCollection('projects');
       </ul>
     </header>
 
-    <!-- ——— Summary: Fraunces lead from about.md (M6c) ——— -->
+    <!-- ——— Summary: lead from legacy about.md ——— -->
     {summary && (
       <div class="resume-summary">
         {summary.split('\n\n').map((p) => <p>{p}</p>)}
       </div>
     )}
 
-    <!-- ——— Headline measurements from the résumé's facts ——— -->
+    <!-- ——— Headline metrics from the résumé's facts ——— -->
     <div class="resume-metrics" aria-label="Headline metrics">
       <MetricBadge value="10s → 2s" label="P50 first-token latency" />
       <MetricBadge value="75%" label="sessions resolved by AI" />

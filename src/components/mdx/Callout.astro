@@ -1,13 +1,13 @@
 ---
-// TRACE PAPER Callout (§3.4) — note | warn | metric.
+// Personal site Callout — note | warn | metric.
 // Reuses the callout-ready classes already in components.css: dashed
-// accent-100 wash, 3px left accent bar, glyph square. `metric` renders a
-// big Fraunces number + mono-caps label ("10.5s → 2.5s · P50 first-token").
+// vermilion wash, 3px left accent bar, glyph square. `metric` renders a
+// big Space Grotesk number + mono-caps label.
 //
 // Props:
 //   type  — 'note' | 'warn' | 'metric' (default 'note')
 //   title — mono-caps heading inside the callout
-//   value — metric only: the big Fraunces number
+//   value — metric only: the big Space Grotesk number
 //   label — metric only: the mono-caps label under the value
 //   body text goes in the default slot (rendered under value/label)
 interface Props {
@@ -19,12 +19,12 @@ interface Props {
 
 const { type = 'note', title, value, label } = Astro.props;
 
-// Glyph square letters — measurement voice: 'i' note, '!' warn, 'Σ' metric.
+// Glyph square letters — 'i' note, '!' warn, 'Σ' metric.
 const GLYPHS: Record<string, string> = { note: 'i', warn: '!', metric: 'Σ' };
 const ARIA_LABELS: Record<string, string> = {
   note: 'Note',
   warn: 'Warning',
-  metric: 'Measurement',
+  metric: 'Metric',
 };
 const glyph = GLYPHS[type] ?? 'i';
 ---
