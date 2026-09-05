@@ -29,3 +29,9 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# user-local paths (kept out of the site repo — restored from pre-Astro .gitignore)
+local/
+.pi/
+AGENTS.md
+.ignore
