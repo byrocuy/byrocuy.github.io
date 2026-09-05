@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 260" role="img" aria-labelledby="ttft-title ttft-desc">
+  <title id="ttft-title">First-token latency before versus after</title>
+  <desc id="ttft-desc">Two traces on instrument paper: BEFORE sits flat at a P50 of 10.5 seconds; AFTER drops to a P50 of 2.5 seconds with a vermilion measurement marker at the end.</desc>
+
+  <rect width="640" height="260" fill="#FBFAF6"/>
+
+  <!-- dot-grid plotter texture -->
+  <g fill="#16140F" fill-opacity="0.04">
+    <circle cx="12" cy="12" r="1.6"/><circle cx="44" cy="12" r="1.6"/><circle cx="76" cy="12" r="1.6"/>
+    <circle cx="12" cy="52" r="1.6"/><circle cx="44" cy="52" r="1.6"/><circle cx="76" cy="52" r="1.6"/>
+    <circle cx="12" cy="92" r="1.6"/><circle cx="44" cy="92" r="1.6"/><circle cx="76" cy="92" r="1.6"/>
+    <circle cx="12" cy="132" r="1.6"/><circle cx="44" cy="132" r="1.6"/><circle cx="76" cy="132" r="1.6"/>
+  </g>
+
+  <!-- hairline grid -->
+  <g stroke="#ECE6D6" stroke-width="1">
+    <line x1="64" y1="200" x2="596" y2="200"/>
+    <line x1="64" y1="150" x2="596" y2="150"/>
+    <line x1="64" y1="100" x2="596" y2="100"/>
+    <line x1="64" y1="50" x2="596" y2="50"/>
+  </g>
+
+  <!-- axes: plotter-ink h1 lines -->
+  <line x1="64" y1="16" x2="64" y2="200" stroke="#C8C0AA" stroke-width="1.5"/>
+  <line x1="64" y1="200" x2="596" y2="200" stroke="#C8C0AA" stroke-width="1.5"/>
+
+  <!-- SECOND y-axis guide for BEFORE (latency) -->
+  <g stroke="#ECE6D6" stroke-width="1">
+    <line x1="100" y1="16" x2="100" y2="200"/>
+    <line x1="136" y1="16" x2="136" y2="200"/>
+  </g>
+
+  <!-- BEFORE: flat high trace, dashed, faint ink (10.5s) -->
+  <polyline points="84,58 456,58" fill="none" stroke="#B6AE9C" stroke-width="2" stroke-dasharray="7 5"/>
+  <text x="84" y="42" font-family="ui-monospace, 'IBM Plex Mono', Menlo, Consolas, monospace" font-size="11" letter-spacing="1.5" fill="#7C7567">BEFORE · P50 10.5s</text>
+
+  <!-- AFTER: S-curve drop to 2.5s, signal vermilion, 2px trace + marker -->
+  <polyline points="84,58 136,62 212,120 300,148 404,158 456,160" fill="none" stroke="#E6492B" stroke-width="2"/>
+  <rect x="453" y="157" width="7" height="7" fill="#E6492B"/>
+  <text x="84" y="222" font-family="ui-monospace, 'IBM Plex Mono', Menlo, Consolas, monospace" font-size="11" letter-spacing="1.5" fill="#E6492B">AFTER · P50 2.5s</text>
+
+  <!-- axis caption -->
+  <text x="330" y="244" text-anchor="middle" font-family="ui-monospace, 'IBM Plex Mono', Menlo, Consolas, monospace" font-size="11" letter-spacing="3" fill="#7C7567">FIRST TOKEN →</text>
+</svg>

@@ -1,0 +1,40 @@
+---
+// TRACE PAPER CodeBlock (§3.4, §6) — overrides MDX `pre`, so every fenced
+// code block on a post renders as the single deliberate inversion: a dark
+// --code-bg panel with a mono-caps header strip (language + optional title)
+// over the Shiki-highlighted body, horizontal scroll, aria-label.
+//
+// MDX hands us the Shiki-rendered `<pre>` node's props with HTML-cased
+// attribute names (mdx compiles with elementAttributeNameCase: "html"):
+//   class         → "astro-code language-<lang>" (plus astro-code TokoLine)
+//   data-language → added by Astro's internal shiki transformer
+//   data-title    → added by our trace-paper:code-title shiki transformer
+//                   (fence meta `title="…"`); CodeBlock shows it in the
+//                   header strip
+//   style/tabindex → passthrough (overflow-x from Shiki, tabindex 0)
+//   children      → the Shiki token spans (rendered via the default slot)
+const {
+  ['class']: klass = '',
+  'data-language': dataLanguage,
+  'data-title': dataTitle,
+  children: _children,
+  ...rest
+} = Astro.props;
+
+const lang = (dataLanguage ?? /language-([\w+-]+)/.exec(klass)?.[1] ?? 'text').toLowerCase();
+const label = dataTitle ?? lang;
+---
+<div class="codeblock">
+  <div class="codeblock__head" aria-hidden="true">
+    <span class="codeblock__lang">{lang}</span>
+    {dataTitle && <span class="codeblock__title">{dataTitle}</span>}
+  </div>
+  <pre
+    class={klass ? `${klass} codeblock__pre` : 'codeblock__pre'}
+    data-language={lang}
+    aria-label={`Code block — ${label}`}
+    {...rest}
+  >
+    <slot />
+  </pre>
+</div>

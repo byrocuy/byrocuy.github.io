@@ -1,0 +1,131 @@
+---
+title: "TTFT, not price: slicing first-token latency from 10s to 2s on a FastAPI agent"
+description: "How we cut P50 first-token latency from 10–12s to 2–3s on a FastAPI LLM agent: streaming WebSocket responses, init-on-startup, parallel orchestration, and removing redundant processing."
+pubDate: 2026-09-05
+tags: [llm, backend, performance]
+featured: true
+extensions:
+  math: true
+  mermaid: true
+---
+
+Everyone asks what an LLM agent costs per token. The question we actually obsess over on my team is narrower: **how long until the first token lands on screen**. Our FastAPI agent's P50 first-token time (TTFT) was sitting at 10–12 seconds, with occasional 20-second P95s — and that number was quietly turning every "AI feature" into a spinner that outlived the user's patience.
+
+This post is the before/after of taking P50 from 10–12s to 2–3s with four changes and no model swap: stream over the wire, initialize once at startup, run orchestration in parallel, and delete redundant work.
+
+> _A chat user's patience isn't a percentile — it's the first second. A spinner that outlives the user is a product decision made by default._
+
+## The metric that matters
+
+First-token latency is the metric users feel. Total generation time matters for batch jobs, but a chat user's perception is decided in the first second — the rest streams in. So we benchmarked P50 and P95 TTFT as the primary signal and treated "first byte" as a product requirement, not a performance nicety.
+
+The definition we shipped is boring on purpose: P50 is the sample median of first-token times — for $n$ samples sorted as $x_{(1)} \le \dots \le x_{(n)}$,
+
+$$P_{50} = x_{\left( \lceil \tfrac{n+1}{2} \rceil \right)}$$
+
+— half of requests beat it, half don't. Boring because it's stable: one slow morning doesn't move a median the way it moves an average, so the metric doesn't lie to the dashboard.
+
+<Callout type="note" title="Benchmark what ships">
+First-token latency is a product metric, not an infra metric. Track it next to signups and retention, not just inside the LLM observability stack — otherwise it gets optimized on the wrong timescale.
+</Callout>
+
+<Callout type="warn" title="P50 hides the P99">
+A healthy median can still feel broken. Our P99 was 20 seconds before we started, and every one of those requests was a user giving up. Streaming is what collapsed the whole tail, not just the middle.
+</Callout>
+
+## Where the 10–12 seconds went
+
+Before touching anything, we instrumented the full request path, from click to first rendered token, and split it into four cost centers:
+
+| Stage | P50 share | What we changed |
+| --- | --- | --- |
+| Orchestration (retrieval + context assembly) | ~3.5s | sequential `await`s → `asyncio.gather` |
+| WebSocket buffering | ~2–3s | stream each token as it arrives |
+| Pre-processing (guards, redaction, tokenizing) | ~2s | deleted repeated passes |
+| First-token inference (provider stream) | ~3s | kept — now overlapped with the rest |
+
+Reading this table, the model was the *smallest* lever. The biggest wins were in our own request path.
+
+## Streaming, not buffering
+
+The old handler accumulated `complete_text = ""` and sent one giant message when done. That alone swallowed ~2–3s of the budget. We switched to an `AsyncIterator[str]` and pushed each delta the moment it left the model:
+
+```python {1,3-5} title="Streaming handler"
+async def stream(ws: WebSocket, chunks: AsyncIterator[str]) -> None:
+    await ws.send_json({"type": "start"})
+    async for delta in chunks:
+        await ws.send_json({"type": "token", "delta": delta})
+    await ws.send_json({"type": "end"})
+```
+
+The client renders tokens as they arrive, so the perceived wait drops even before the percentile math improves. The sequence, end to end:
+
+<Mermaid
+  code={`sequenceDiagram
+    participant C as Browser client
+    participant F as FastAPI agent
+    participant L as LLM provider
+
+    C->>F: POST /chat/stream
+    F->>L: chat.completions (stream=True)
+    L-->>F: token deltas (SSE)
+    F->>C: websocket JSON {type: "token", delta}
+    C-->>C: render delta immediately
+    Note over F,C: first token on screen in ~2s, not after full generation`}
+  caption="Streaming path: client → FastAPI → LLM provider"
+/>
+
+Streaming also surfaces model progress, which matters when the tail is slow.
+
+## Init-on-startup, not on first request
+
+Models, tokenizers, and profile caches were loading lazily on the first request — politely deferring cost until the *happy path* paid it. We moved that work to the app's lifespan:
+
+```python {2-4} title="Init once at boot"
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    app.state.model = await load_model()   # once, at boot
+    app.state.tokenizer = load_tokenizer()
+    app.state.profiles = await load_profiles()
+    yield
+```
+
+Cold-start is now a boot-time event with its own metric, not a tax on the first user of the day.
+
+## Parallel orchestration
+
+The orchestration layer ran in strict sequence: retrieve context, then load profile, then guard-check, then build the prompt — each hop waiting on the previous one. None of these depend on each other's output at the front of the path:
+
+```python
+context, profile, guard = await asyncio.gather(
+    retrieve(query),        # vector store
+    load_profile(user_id),  # preferences + history
+    check_policy(query),    # redaction + guardrails
+)
+```
+
+These three futures were worth ~3.5s of serial time; concurrent, they add roughly the slowest one. Anything not needed for the first token (telemetry, audit writes) moved *after* generation starts.
+
+## Removing redundant work
+
+The biggest surprise was duplicate compute we'd written ourselves:
+
+- the same user input was tokenized twice — once for redaction, once for the model;
+- the retriever embedded the query, then the controller embedded it again for logging;
+- tool schemas were re-serialized on every request instead of cached.
+
+Each pass looked cheap in isolation; summed, they were ~2s of the budget. We deleted them.
+
+## After
+
+![First-token latency before and after — two traces on instrument paper](/latency-before-after.svg)
+
+Same model, same provider, same box: P50 first-token went from 10–12s to 2–3s. The remaining two seconds are mostly inference and network — the parts that actually cost money to improve. We streamed, we bootstrapped at boot, we parallelized, and we deleted; in that order, deletion gave the best seconds-per-engineer-hour.
+
+<Callout type="metric" value="10.5s → 2.5s" label="P50 first-token, before → after">
+Same model, same provider, same box — four code-level changes, no model swap. (Rounded from the 10–12s / 2–3s ranges above.)
+</Callout>
+
+## What I'd measure next
+
+Queuing discipline under load (token-bucket on the model route), P99 instead of only P50, and client-side render time once tokens arrive. TTFT is the next price war — not price per token. Getting to 2s felt like buying back a user's attention span; getting to 1s would feel like buying back the spinner entirely.

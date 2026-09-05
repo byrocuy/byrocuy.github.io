@@ -1,43 +1,40 @@
-# Chirpy Starter
+# TRACE PAPER
 
-[![Gem Version](https://img.shields.io/gem/v/jekyll-theme-chirpy)][gem]&nbsp;
-[![GitHub license](https://img.shields.io/github/license/cotes2020/chirpy-starter.svg?color=blue)][mit]
+**TRACE PAPER — the measurement logbook (and résumé) of Roby Attoillah, an AI
+engineer.** A light, warm *instrument-paper* editorial site: matte porcelain
+paper, ink-black Fraunces serif type, a single signal-vermilion accent, and a
+fine plotter dot-grid texture. The signature **TraceLine** — an oscilloscope
+SVG stroke that draws itself under every H1 — renders Roby's P50-latency cut
+(10 s → 2 s) as a motif. Static-first: blog + résumé, zero runtime JS.
 
-When installing the [**Chirpy**][chirpy] theme through [RubyGems.org][gem], Jekyll can only read files in the folders
-`_data`, `_layouts`, `_includes`, `_sass` and `assets`, as well as a small part of options of the `_config.yml` file
-from the theme's gem. If you have ever installed this theme gem, you can use the command
-`bundle info --path jekyll-theme-chirpy` to locate these files.
+## Tech stack
 
-The Jekyll team claims that this is to leave the ball in the user’s court, but this also results in users not being
-able to enjoy the out-of-the-box experience when using feature-rich themes.
+Astro 7 · MDX · Shiki (syntax highlighting) · KaTeX (math) · Mermaid
+(diagrams) · plain CSS design tokens (no framework).
 
-To fully use all the features of **Chirpy**, you need to copy the other critical files from the theme's gem to your
-Jekyll site. The following is a list of targets:
+## Local development
 
-```shell
-.
-├── _config.yml
-├── _plugins
-├── _tabs
-└── index.html
+```sh
+npm install
+npm run dev        # dev server at http://localhost:4321
+npm run build      # static site → dist/
+npx astro check    # content schema + type validation
 ```
 
-To save you time, and also in case you lose some files while copying, we extract those files/configurations of the
-latest version of the **Chirpy** theme and the [CD][CD] workflow to here, so that you can start writing in minutes.
+## Deployment
 
-## Usage
+**GitHub Pages (primary)** — push to `main`. `.github/workflows/deploy.yml`
+builds and publishes automatically (site: `byrocuy.github.io`, base `''`).
+Repo settings → Pages → Source: **GitHub Actions**.
 
-Check out the [theme's docs](https://github.com/cotes2020/jekyll-theme-chirpy/wiki).
+**Cloudflare Pages (migration path, PLAN §7.2)** — connect this repo in
+Cloudflare Pages → Create project: build command `npm run build`, output
+directory `dist/`, root `/`; set env vars `SITE_URL` / `BASE_PATH` (empty for
+Cloudflare). Same config object, zero code changes, no adapter, no lock-in.
+Docs: https://docs.astro.build/en/guides/deploy/cloudflare/ ·
+https://developers.cloudflare.com/pages/
 
-## Contributing
+## Notes
 
-This repository is automatically updated with new releases from the theme repository. If you encounter any issues or want to contribute to its improvement, please visit the [theme repository][chirpy] to provide feedback.
-
-## License
-
-This work is published under [MIT][mit] License.
-
-[gem]: https://rubygems.org/gems/jekyll-theme-chirpy
-[chirpy]: https://github.com/cotes2020/jekyll-theme-chirpy/
-[CD]: https://en.wikipedia.org/wiki/Continuous_deployment
-[mit]: https://github.com/cotes2020/chirpy-starter/blob/master/LICENSE
+- Social share image: `public/og-default.png`, regenerated with
+  `node scripts/og.mjs` (`sharp` is a devDependency; the script is build-time only).

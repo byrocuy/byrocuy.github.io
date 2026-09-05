@@ -1,0 +1,70 @@
+---
+// TRACE PAPER Mermaid (§6) — client-side-only diagram rendering.
+// mermaid is NOT wired into the build (no remark/rehype mermaid plugin):
+// this component ships a lazy `await import('mermaid')` in a plain page
+// script, so the mermaid bundle only loads on posts that use <Mermaid>
+// (and only where extensions.mermaid is set — gated in /blog/[slug].astro).
+//
+// Honors prefers-reduced-motion the simple way: no animation config is ever
+// applied (sequence/flow diagrams render static by default), so there is
+// nothing to suppress. The raw diagram source is served as a <pre> fallback
+// in the HTML; if JS loads, the rendered SVG replaces it in place.
+interface Props {
+  /** Raw mermaid diagram source passed in the code prop. */
+  code: string;
+  /** Accessible name for the rendered diagram. */
+  caption?: string;
+}
+
+const { code, caption = 'Diagram' } = Astro.props;
+---
+<div class="mermaid" role="img" aria-label={caption}>
+  <pre class="mermaid-fallback">{code}</pre>
+</div>
+
+<script>
+  // Lazy, client-side-only: bundles mermaid in its own chunk.
+  const containers = document.querySelectorAll('.mermaid');
+
+  if (containers.length > 0) {
+    const { default: mermaid } = await import('mermaid');
+
+    mermaid.initialize({
+      startOnLoad: false,
+      securityLevel: 'strict',
+      theme: 'neutral',
+      // TRACE PAPER palette (§3.1) so diagrams read as part of the paper.
+      themeVariables: {
+        fontFamily: "'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif",
+        background: '#FBFAF6',
+        primaryColor: '#F4F0E6',
+        primaryBorderColor: '#C8C0AA',
+        primaryTextColor: '#16140F',
+        lineColor: '#C8C0AA',
+        secondaryColor: '#FBFAF6',
+        tertiaryColor: '#FBE6DD',
+        actorBkg: '#F4F0E6',
+        actorBorder: '#C8C0AA',
+        actorTextColor: '#16140F',
+        actorLineColor: '#C8C0AA',
+        signalColor: '#C8C0AA',
+        signalTextColor: '#16140F',
+        labelBoxBkgColor: '#FBE6DD',
+        labelBoxBorderColor: '#E6492B',
+        noteBkgColor: '#F4F0E6',
+        noteBorderColor: '#B6AE9C',
+        sequenceNumberColor: '#7C7567',
+      },
+    });
+
+    for (const [i, el] of [...containers].entries()) {
+      const source = el.querySelector('.mermaid-fallback')?.textContent ?? '';
+      try {
+        const { svg } = await mermaid.render(`trace-mermaid-${i}`, source);
+        el.innerHTML = svg;
+      } catch {
+        // Leave the source <pre> visible and readable if rendering fails.
+      }
+    }
+  }
+</script>

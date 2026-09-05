@@ -1,0 +1,39 @@
+---
+// TRACE PAPER Callout (§3.4) — note | warn | metric.
+// Reuses the callout-ready classes already in components.css: dashed
+// accent-100 wash, 3px left accent bar, glyph square. `metric` renders a
+// big Fraunces number + mono-caps label ("10.5s → 2.5s · P50 first-token").
+//
+// Props:
+//   type  — 'note' | 'warn' | 'metric' (default 'note')
+//   title — mono-caps heading inside the callout
+//   value — metric only: the big Fraunces number
+//   label — metric only: the mono-caps label under the value
+//   body text goes in the default slot (rendered under value/label)
+interface Props {
+  type?: 'note' | 'warn' | 'metric';
+  title?: string;
+  value?: string;
+  label?: string;
+}
+
+const { type = 'note', title, value, label } = Astro.props;
+
+// Glyph square letters — measurement voice: 'i' note, '!' warn, 'Σ' metric.
+const GLYPHS: Record<string, string> = { note: 'i', warn: '!', metric: 'Σ' };
+const ARIA_LABELS: Record<string, string> = {
+  note: 'Note',
+  warn: 'Warning',
+  metric: 'Measurement',
+};
+const glyph = GLYPHS[type] ?? 'i';
+---
+<div class={`callout callout--${type}`} role="note" aria-label={title ?? ARIA_LABELS[type] ?? 'Note'}>
+  <span class="callout__glyph" aria-hidden="true">{glyph}</span>
+  <div class="callout__body">
+    {title && <p class="callout__title">{title}</p>}
+    {type === 'metric' && value && <p class="callout__value">{value}</p>}
+    {type === 'metric' && label && <p class="callout__label">{label}</p>}
+    <slot />
+  </div>
+</div>

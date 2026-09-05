@@ -1,0 +1,82 @@
+/* ============================================================
+   TRACE PAPER — design tokens
+   PLAN §3.1 (palette) · §3.2 (type) · §3.3 (space / radius)
+   Single source of truth: pages and components reference these
+   variables only — no hex values are duplicated in page styles.
+   ============================================================ */
+
+:root {
+  /* ——— §3.1 Palette (hex tokens) ———
+     Light paper, light-only in v1. */
+  --paper-0: #FBFAF6; /* page background */
+  --paper-1: #F4F0E6; /* surface (cards, code-adjacent panels) */
+  --paper-2: #ECE6D6; /* pressed / hover surface */
+  --ink-900: #16140F; /* body & headings (near-ink, warm black) */
+  --ink-700: #474139; /* secondary text */
+  --ink-500: #7C7567; /* muted metadata */
+  --ink-300: #B6AE9C; /* faint / disabled */
+  --hairline: #DFD8C7; /* 1px borders */
+  --hairline-2: #C8C0AA; /* stronger hairline (tables, TOC) */
+  --accent-500: #E6492B; /* signal vermilion — trace, badges, focus ring */
+  --accent-600: #C83B20; /* links on paper (contrast ≈ 4.6:1 — text-safe) */
+  --accent-700: #A83016; /* link hover / pressed */
+  --accent-100: #FBE6DD; /* callout wash */
+  --code-bg: #1C1913; /* ink panel behind code blocks (single deliberate inversion) */
+  --code-ink: #F2EEDF; /* text on code panel */
+
+  /* ——— §3.1 Semantic trio — used only in callouts ——— */
+  --ok: #2E7D46;
+  --warn: #8A6300;
+  --info: #23569E;
+
+  /* ——— §3.2 Type families ——— */
+  --font-display: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
+  --font-body: 'IBM Plex Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* ——— §3.2 Fluid type scale ——— */
+  --step-0: 1.0625rem; /* body, lh 1.75 */
+  --step-1: 1.25rem;
+  --step-2: 1.5rem;
+  --step-3: 2rem;
+  --step-4: clamp(1.75rem, 4vw, 2.75rem); /* h2 */
+  --display: clamp(3rem, 8vw, 6.75rem); /* h1 */
+  --step--1: 0.8125rem; /* small / caption */
+  --label: 0.6875rem; /* mono caps labels */
+
+  /* body line-height */
+  --lh-body: 1.75;
+
+  /* ——— §3.3 Space scale (rem) ——— */
+  --s1: 0.25rem;
+  --s2: 0.5rem;
+  --s3: 0.75rem;
+  --s4: 1rem;
+  --s5: 1.5rem;
+  --s6: 2rem;
+  --s7: 3rem;
+  --s8: 4.5rem;
+
+  /* ——— §3.3 Columns ——— */
+  --measure-prose: 42rem; /* prose measure */
+  --measure-page: 66rem; /* page column, max 1080px */
+
+  /* ——— §3.3 Radii — tables stay square ——— */
+  --r-sm: 4px; /* badges, chips */
+  --r-md: 8px; /* cards, code panel */
+  --r-lg: 12px; /* callouts */
+}
+
+/* ——— §3.1 Selection ——— */
+::selection {
+  background: var(--accent-600);
+  color: var(--paper-0);
+}
+
+/* ——— §3.1 Contrast rule ———
+   --accent-500 (#E6492B) is DECORATIVE-ONLY: large marks, the trace
+   line, badges ≥18px. All text-level emphasis (links, labels) must use
+   --accent-600 / --accent-700. Enforced by:
+     .prose a { color: var(--accent-600) }            (prose.css)
+     .nav-links a[aria-current='page'] { … }          (components.css)
+   ——— */

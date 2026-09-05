@@ -1,0 +1,837 @@
+/* ============================================================
+   TRACE PAPER — components
+   PLAN §3.3 · §3.4 · §3.5
+   Nav · Footer · hero · Ledger/PostCard primitives · Badge ·
+   Callout-ready classes · TraceLine. Depends on tokens.css.
+   ============================================================ */
+
+/* ——— Micro utilities ——— */
+.mono-label {
+  font-family: var(--font-mono);
+  font-size: var(--label);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-500);
+}
+
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ——— Page shell ——— */
+.page {
+  max-width: var(--measure-page);
+  margin-inline: auto;
+  padding: var(--s6) var(--s4) var(--s8);
+}
+
+/* ============================================================
+   Nav — sticky, hairline bottom (§3.4)
+   ============================================================ */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  background-color: var(--paper-0);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s5);
+  max-width: var(--measure-page);
+  margin-inline: auto;
+  padding: var(--s2) var(--s4);
+}
+
+/* left: trace-spike glyph in a bordered square + wordmark */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s3);
+  color: var(--ink-900);
+  text-decoration: none;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--hairline-2);
+  border-radius: var(--r-sm);
+  color: var(--accent-500); /* currentColor default for the trace glyph */
+}
+
+.brand-mark svg {
+  width: 18px;
+  height: 18px;
+}
+
+.brand-mark .bm-box {
+  stroke: var(--hairline-2);
+}
+
+.brand-mark .bm-trace {
+  stroke: var(--accent-500);
+}
+
+.brand-word {
+  font-family: var(--font-mono);
+  font-size: var(--label);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-900);
+  white-space: nowrap;
+}
+
+/* right: mono-caps links — mobile = horizontal scroll, no hamburger */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: var(--s5);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.nav-links::-webkit-scrollbar {
+  display: none;
+}
+
+.nav-links a {
+  font-family: var(--font-mono);
+  font-size: var(--label);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ink-700);
+  padding: var(--s2) 0;
+  white-space: nowrap;
+  transition: color 160ms ease;
+}
+
+.nav-links a:hover {
+  color: var(--ink-900);
+}
+
+/* §3.1 contrast rule: aria-current page mark is accent-600, not 500 */
+.nav-links a[aria-current='page'] {
+  color: var(--accent-600);
+}
+
+.nav-links .nav-icon {
+  color: var(--ink-500);
+}
+
+.nav-links .nav-icon:hover {
+  color: var(--ink-900);
+}
+
+.nav-links .nav-icon svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* ============================================================
+   Footer — mono caps strip (§3.4)
+   ============================================================ */
+.footer {
+  border-top: 1px solid var(--hairline);
+  background-color: var(--paper-0);
+}
+
+.footer-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s2) var(--s4);
+  max-width: var(--measure-page);
+  margin-inline: auto;
+  padding: var(--s4);
+  font-family: var(--font-mono);
+  font-size: var(--label);
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-500);
+}
+
+.footer .top-link {
+  color: var(--ink-500);
+  text-decoration: none;
+}
+
+.footer .top-link:hover {
+  color: var(--ink-900);
+}
+
+/* ============================================================
+   Hero — dot-grid applied via .dot-grid utility (§3.3)
+   ============================================================ */
+.hero {
+  padding: var(--s8) 0 var(--s7);
+  border-bottom: 1px solid var(--hairline);
+  background-color: var(--paper-0);
+}
+
+.hero-inner {
+  max-width: var(--measure-page);
+  margin-inline: auto;
+  padding-inline: var(--s4);
+}
+
+.hero h1 {
+  max-width: 20ch;
+}
+
+.hero .trace-line {
+  margin-top: var(--s5);
+  max-width: 30rem;
+}
+
+.hero-note {
+  display: block;
+  margin-top: var(--s5);
+}
+
+/* ============================================================
+   Ledger + PostCard primitives (§3.4) — rows instantiated in M4
+   ============================================================ */
+.ledger {
+  border-top: 1px solid var(--hairline-2);
+}
+
+.ledger__head {
+  display: grid;
+  grid-template-columns: 6.5rem 1fr 10rem;
+  gap: var(--s4);
+  padding: var(--s2) 0;
+  border-bottom: 1px solid var(--hairline);
+  font-family: var(--font-mono);
+  font-size: var(--label);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-500);
+}
+
+.post-card {
+  display: grid;
+  grid-template-columns: 6.5rem 1fr 10rem;
+  gap: var(--s4);
+  align-items: baseline;
+  padding: var(--s5) 0;
+  border-bottom: 1px solid var(--hairline);
+  border-left: 3px solid transparent; /* hover: hairline → accent */
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 200ms ease, background-color 200ms ease;
+}
+
+.post-card:hover {
+  border-left-color: var(--accent-500);
+}
+
+.post-card:focus-visible {
+  border-left-color: var(--accent-600);
+}
+
+.post-card__date {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-500);
+  display: block;
+}
+
+.post-card__date-col {
+  display: block;
+}
+
+.post-card__read {
+  display: block;
+  margin-top: var(--s1);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-500);
+}
+
+.post-card__main {
+  display: block;
+  min-width: 0;
+}
+
+.post-card__title {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--step-2);
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  color: var(--ink-900);
+}
+
+.post-card__desc {
+  display: block;
+  margin-top: var(--s1);
+  font-size: var(--step-0);
+  color: var(--ink-700);
+}
+
+/* hover: TraceLine underline */
+.post-card .trace-line {
+  margin-top: var(--s2);
+  max-width: 14rem;
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.post-card:hover .trace-line,
+.post-card:focus-visible .trace-line {
+  opacity: 1;
+}
+
+.post-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s1);
+  justify-content: flex-end;
+}
+
+@media (max-width: 40rem) {
+  .post-card {
+    grid-template-columns: 1fr;
+    gap: var(--s1);
+  }
+  .post-card__tags {
+    justify-content: flex-start;
+  }
+  .ledger__head {
+    display: none;
+  }
+}
+
+/* ============================================================
+   Badge (§3.4) — mono caps 11px, hairline border, --r-sm
+   ============================================================ */
+.badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-700);
+  background: transparent;
+  border: 1px solid var(--hairline-2);
+  border-radius: var(--r-sm);
+  padding: 0.35em 0.6em;
+  white-space: nowrap;
+}
+
+.badge--accent {
+  color: var(--accent-600); /* §3.1: text is accent-600, hairline stays neutral */
+}
+
+/* ============================================================
+   Callout-ready classes (§3.4) — Callout.astro lands in M5
+   ============================================================ */
+.callout {
+  display: flex;
+  gap: var(--s4);
+  align-items: flex-start;
+  padding: var(--s4) var(--s5);
+  background: var(--accent-100); /* wash */
+  border: 1px dashed var(--hairline-2);
+  border-left: 3px solid var(--accent-500); /* left accent bar */
+  border-radius: 0 var(--r-lg) var(--r-lg) 0;
+}
+
+.callout__glyph {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 1.75rem;
+  height: 1.75rem;
+  margin-top: 0.1em;
+  border: 1px solid currentColor;
+  border-radius: var(--r-sm);
+  font-family: var(--font-mono);
+  font-size: var(--label);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-500); /* decorative glyph — accent-500 ok */
+}
+
+.callout__title {
+  margin-bottom: var(--s1);
+  font-family: var(--font-mono);
+  font-size: var(--label);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-600); /* §3.1 contrast rule */
+}
+
+.callout__body {
+  min-width: 0;
+}
+
+.callout__body > * + * {
+  margin-top: var(--s2);
+}
+
+.callout__body p {
+  font-size: var(--step-0);
+  line-height: var(--lh-body);
+  color: var(--ink-700);
+}
+
+/* type variants — semantic trio (§3.1) */
+.callout--note {
+  border-left-color: var(--info);
+}
+.callout--note .callout__glyph,
+.callout--note .callout__title {
+  color: var(--info);
+}
+.callout--warn {
+  border-left-color: var(--warn);
+}
+.callout--warn .callout__glyph,
+.callout--warn .callout__title {
+  color: var(--warn);
+}
+.callout--metric {
+  border-left-color: var(--accent-600);
+}
+.callout--metric .callout__glyph,
+.callout--metric .callout__title {
+  color: var(--accent-600);
+}
+
+/* metric: big Fraunces number + mono caps label */
+.callout--metric .callout__value {
+  font-family: var(--font-display);
+  font-size: var(--step-4);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-900);
+}
+
+.callout--metric .callout__label {
+  margin-top: var(--s1);
+  font-family: var(--font-mono);
+  font-size: var(--label);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-500);
+}
+
+/* ============================================================
+   MDX rich formatting (M5) — CodeBlock · line highlights · Mermaid
+   ============================================================ */
+/* CodeBlock §3.4 — dark ink panel + mono-caps header strip. The inner
+   <pre> is the Shiki output (class astro-code / language-*), so existing
+   prose.css rules keep tokens unstyled; the panel owns the border + radius
+   and the .highlighted line wash lives on the ink background. */
+.codeblock {
+  margin: var(--s6) 0;
+  background: var(--code-bg);
+  border: 1px solid var(--hairline-2);
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+
+.codeblock__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--s2) var(--s4);
+  padding: var(--s2) var(--s4);
+  background: color-mix(in srgb, var(--code-ink) 4%, var(--code-bg));
+  border-bottom: 1px solid var(--hairline-2);
+}
+
+.codeblock__lang {
+  font-family: var(--font-mono);
+  font-size: var(--label);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--code-ink);
+}
+
+.codeblock__title {
+  font-family: var(--font-mono);
+  font-size: var(--label);
+  letter-spacing: 0.08em;
+  color: var(--ink-500);
+}
+
+.prose .codeblock pre {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: var(--code-bg);
+}
+
+/* line highlights from fence meta {1,3-5} (transformerMetaHighlight) —
+   dry accent wash + a 2px vermilion left tick, ink-panel edition */
+.prose .codeblock .line.highlighted {
+  background: color-mix(in srgb, var(--accent-100) 13%, transparent);
+  box-shadow: inset 2px 0 0 var(--accent-500);
+}
+
+/* Mermaid §6 — lazy client render into this panel; the raw source pre is
+   the no-JS fallback and is replaced by the SVG on load. */
+.mermaid {
+  margin: var(--s6) 0;
+  padding: var(--s5);
+  background: var(--paper-1);
+  border: 1px solid var(--hairline-2);
+  border-radius: var(--r-md);
+  overflow-x: auto;
+}
+
+.mermaid .mermaid-fallback {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  line-height: 1.6;
+  color: var(--ink-700);
+  white-space: pre;
+}
+
+.mermaid svg {
+  max-width: 100%;
+  height: auto;
+  margin-inline: auto;
+}
+
+/* ============================================================
+   TraceLine (§3.5) — the ONE signature interaction
+   JS (TraceLine.astro) sets dasharray/dashoffset from
+   getTotalLength(); IntersectionObserver adds
+   .trace-line--visible → 700ms cubic draw.
+   prefers-reduced-motion → complete instantly, no transition.
+   ============================================================ */
+.trace-line {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.trace-line__path {
+  fill: none;
+  stroke: var(--accent-500); /* §3.1: decorative-only — 2px trace */
+  stroke-width: 2;
+}
+
+.trace-line--visible .trace-line__path {
+  animation: trace-draw 700ms cubic-bezier(0.33, 1, 0.68, 1) forwards;
+}
+
+@keyframes trace-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trace-line--visible .trace-line__path {
+    animation: none;
+  }
+  /* complete instantly — beats the JS-set inline dashoffset */
+  .trace-line__path {
+    stroke-dashoffset: 0 !important;
+  }
+}
+
+/* ============================================================
+   Résumé page (§3.4) — ResumeSection · MetricBadge · entries — M3
+   Seeded from src/content (resume/profile.yaml + projects/*.yaml).
+   ============================================================ */
+.resume-head {
+  padding: var(--s4) 0 var(--s6);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.resume-head .mono-label {
+  display: block;
+  margin-bottom: var(--s2);
+}
+
+.resume-head h1 {
+  max-width: 14ch;
+}
+
+.resume-head .trace-line {
+  margin-top: var(--s4);
+  max-width: 30rem;
+}
+
+/* contact strip — mono, NOT uppercase (emails/phones stay legible) */
+.resume-contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2) var(--s5);
+  margin-top: var(--s5);
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-mono);
+  font-size: var(--label);
+  letter-spacing: 0.06em;
+  color: var(--ink-700);
+}
+
+.resume-contact a {
+  color: var(--accent-600); /* §3.1 contrast rule: links are accent-600 */
+  text-decoration: none;
+}
+
+.resume-contact a:hover {
+  color: var(--accent-700);
+}
+
+/* ——— Summary lead + open-to-work line (M6c, from legacy about.md) ——— */
+.resume-summary {
+  padding: var(--s5) 0 var(--s4);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.resume-summary p {
+  max-width: 60ch;
+  font-family: var(--font-display); /* Fraunces lead — echoes the prose lead */
+  font-style: italic;
+  font-weight: 400;
+  font-optical-sizing: auto;
+  font-size: var(--step-1);
+  line-height: 1.45;
+  color: var(--ink-700);
+}
+
+.resume-summary p + p {
+  margin-top: var(--s3);
+}
+
+.resume-open {
+  margin-top: var(--s5);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: var(--step-1);
+  color: var(--ink-900);
+}
+
+/* ——— Headline measurement dashboard ——— */
+.resume-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+  gap: var(--s3);
+  padding: var(--s5) 0 var(--s4);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.metric-badge {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+  padding: var(--s3) var(--s4) var(--s2);
+  background-color: var(--paper-0);
+  border: 1px solid var(--hairline);
+  border-top: 3px solid var(--accent-500); /* trace accent — decorative-only (§3.1) */
+  border-radius: var(--r-md);
+}
+
+.metric-badge__value {
+  font-family: var(--font-display);
+  font-size: var(--step-3);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--ink-900);
+}
+
+.metric-badge__label {
+  font-family: var(--font-mono);
+  font-size: var(--label);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-500);
+}
+
+/* ——— ResumeSection: mono index + Fraunces H2 + hairline rule ——— */
+.resume-section {
+  margin-top: var(--s7);
+  scroll-margin-top: var(--s6);
+}
+
+.resume-section__head {
+  padding-bottom: var(--s3);
+  border-bottom: 1px solid var(--hairline); /* hairline rule */
+}
+
+.resume-section__head .mono-label {
+  display: block;
+  margin-bottom: var(--s1);
+}
+
+/* ——— Entries: org + role + mono dates + badges + bullets ——— */
+.resume-entry {
+  padding: var(--s5) 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.resume-entry:last-child {
+  border-bottom: 0;
+}
+
+.resume-entry__head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--s2) var(--s4);
+  align-items: start;
+}
+
+.resume-entry__org {
+  font-size: var(--step-2);
+  font-weight: 600;
+}
+
+.resume-entry__abbr {
+  font-family: var(--font-mono);
+  font-size: var(--label);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--ink-500);
+}
+
+.resume-entry__role {
+  margin-top: var(--s1);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-700);
+}
+
+.resume-entry__dates {
+  font-family: var(--font-mono);
+  font-size: var(--label);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--ink-500);
+  text-align: right;
+}
+
+.resume-entry__loc {
+  margin-top: var(--s1);
+  font-family: var(--font-mono);
+  font-size: var(--label);
+  letter-spacing: 0.06em;
+  color: var(--ink-500);
+  text-align: right;
+}
+
+.resume-entry__stack,
+.resume-entry__award {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s1);
+  margin-top: var(--s2);
+}
+
+.resume-entry__aside {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--s1);
+}
+
+.resume-entry__summary {
+  margin-top: var(--s2);
+  font-size: var(--step-0);
+  color: var(--ink-700);
+}
+
+.resume-entry__bullets {
+  margin-top: var(--s3);
+  padding-left: 1.25em;
+}
+
+.resume-entry__bullets li + li {
+  margin-top: var(--s1);
+}
+
+.resume-entry__bullets li::marker {
+  color: var(--ink-300);
+}
+
+/* ——— Skills groups ——— */
+.resume-skill-group {
+  display: grid;
+  grid-template-columns: 11rem 1fr;
+  gap: var(--s2) var(--s4);
+  align-items: baseline;
+  padding: var(--s3) 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.resume-skill-group:last-child {
+  border-bottom: 0;
+}
+
+.resume-skill-group__name {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-700);
+}
+
+.resume-skill-group__items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s1);
+  padding: 0;
+  list-style: none;
+}
+
+/* ——— Mobile: single column ——— */
+@media (max-width: 40rem) {
+  .resume-entry__head {
+    grid-template-columns: 1fr;
+    gap: var(--s1);
+  }
+  .resume-entry__dates,
+  .resume-entry__loc {
+    text-align: left;
+  }
+  .resume-entry__aside {
+    align-items: flex-start;
+  }
+  .resume-skill-group {
+    grid-template-columns: 1fr;
+    gap: var(--s1);
+  }
+}

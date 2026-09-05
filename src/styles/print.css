@@ -1,0 +1,65 @@
+/* ============================================================
+   TRACE PAPER — print (M3)
+   Every page must stay printable / PDF-friendly. Screen-first:
+   these rules only apply under @media print and never touch tokens.
+   Résumé rules: hide interactive chrome, keep ink on paper, avoid
+   mid-entry page breaks so a PDF export reads like a clean document.
+   ============================================================ */
+
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm 12mm;
+  }
+
+  html {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body {
+    background-color: var(--paper-0);
+    color: var(--ink-900);
+  }
+
+  /* interactive / decorative chrome stays on screen only */
+  .nav,
+  .skip-link,
+  .hero,
+  .trace-line,
+  .codeblock__head,
+  .footer .top-link {
+    display: none !important;
+  }
+
+  /* one full column, no sticky offsets */
+  .page {
+    max-width: none;
+    padding: 0;
+  }
+
+  main {
+    display: block;
+  }
+
+  /* keep entries whole — no orphaned headers or split rows */
+  .resume-section,
+  .resume-entry,
+  .resume-skill-group,
+  .metric-badge {
+    break-inside: avoid;
+  }
+
+  .resume-section__head,
+  .resume-entry__head {
+    break-after: avoid;
+  }
+
+  /* links render as plain ink — hrefs are already visible in the
+     contact strip, so no URL-after-link noise in the PDF */
+  a,
+  a:visited {
+    color: var(--ink-900);
+    text-decoration: none;
+  }
+}

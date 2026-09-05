@@ -1,0 +1,75 @@
+---
+title: "Handoff without hang-ups: live-agent escalation over WhatsApp"
+description: "Designing a humane AI→human handoff over WhatsApp: bidirectional media, session and history transfer, reconnection and fallback, and SHA-256 verification — without making the user start over."
+pubDate: 2026-08-29
+tags: [agent, whatsapp, backend]
+featured: false
+extensions:
+  math: false
+  mermaid: false
+---
+
+Our agent resolves roughly 75% of sessions end-to-end. The remaining 25% need a human — and the product question was never the resolution stat, it was: does that transition feel seamless, or like a phone tree?
+
+This post is about the handoff path, not the happy path: bidirectional media over WhatsApp and an agent WebSocket, a transferable session snapshot, reconnection with a graceful fallback ladder, and SHA-256 verification on every artifact that moves between systems.
+
+## The handoff contract
+
+Every escalation is a state machine with five states:
+
+```text
+AI_HANDLING → HANDOFF_REQUESTED → ASSIGNED → TRANSFERRED → RESOLVED
+```
+
+Transitions are idempotent — the double-click problem: start and agent-request can race — and each transfer carries a single record: session id, user, history URI, media references, and an audit trail. Nothing mutable hops between processes; everything that moves is a snapshot.
+
+## Bidirectional media
+
+Users escalate with photos of documents, voice notes, and screenshots; agents reply with the same. The hard part is that each side speaks a different transport: the user talks to the WhatsApp Business API, the agent talks to our WebSocket. A `MediaBridge` normalizes both directions — format, size, and hash — stores blobs once, and forwards *references* rather than re-uploading attachments. The user never re-sends a document to the human agent.
+
+## Session and history transfer
+
+Transferring a session means sending a full snapshot, not a pointer to shared state: a compacted transcript (last N turns plus tool outputs), the current slot state, unresolved intents, and media references. Copy-on-transfer means the human reads a stable view while the agent keeps its working copy — no locked sessions, no torn reads during handoff.
+
+## Reconnection and fallback
+
+Socket drops happen; the design treats them as normal. The agent side replays unacknowledged events from a queue, and if the WebSocket stays down it walks a fallback ladder: WebSocket → HTTP polling → WhatsApp text. Each rung degrades features (first media, then rich cards) but never loses the thread — the session id is the invariant.
+
+## SHA-256 verification
+
+Mobile networks and hostile proxies corrupt payloads; a silently corrupted transcript is worse than none. Every artifact transferred — transcript JSON, media blob, session state — carries a `sha256` digest verified at both ends:
+
+```python
+def verify(stream, digest: str) -> bool:
+    h = hashlib.sha256()
+    for chunk in iter(lambda: stream.read(1 << 16), b""):
+        h.update(chunk)
+    return h.hexdigest() == digest
+```
+
+A mismatch refuses the transfer and retries from the raw source, so a handoff only completes on verified data.
+
+## Failure-mode table
+
+The design work was really table work:
+
+| Failure mode | Mitigation |
+| --- | --- |
+| Agent socket drops mid-transfer | Replay queue + polling fallback |
+| Media digest mismatch | Refuse transfer, retry from raw endpoint |
+| Voice note arrives during handoff | Media queue drained before snapshot |
+| Double-click start vs agent-request | Idempotent state transitions |
+
+## The 75%, and the 25%
+
+> _A user re-explaining their problem after being transferred is the seam that loses trust._
+
+The 75% number is the agent's resolution rate. The 25% that escalates is where trust is won or lost — our acceptance test for the handoff path is simple: the human agent picks up knowing everything the user has said, seen, and sent.
+
+<Callout type="metric" value="75%" label="of sessions resolved end-to-end by the agent">
+The remaining 25% is why the seam is engineered: every transfer is verified, replayable, and never makes the user start over.
+</Callout>
+
+## What I'd do differently
+
+Voice notes need a bounded queue with a timeout, not best-effort forwarding; a state-machine sequence diagram (mermaid) would have caught two transitions before the failure-mode table appeared — that lands with the post-template work; and transcripts should be shorter: last N turns beats "everything, ever". The lesson that stuck: handoffs fail in the seam, so we measured and verified the seam itself.

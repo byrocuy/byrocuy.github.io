@@ -1,0 +1,92 @@
+# Roby Attoillah — résumé profile (PLAN §5.1).
+# Migrated mechanically from byrocuy.github.io/local/resume/resume.md (M3),
+# preserving every fact and metric. Bullets verbatim.
+# M6c: enriched from the owner's newer self-authored résumé
+# (byrocuy.github.io/_tabs/about.md — preserved on the jekyll-legacy
+# branch); KLINIKOO role, Coursera cert, summary + open-to-work note added.
+
+contact:
+  name: Roby Attoillah
+  location: Sukabumi, Jawa Barat
+  phone: '+62 812-2510-2516'
+  email: byrocuy@gmail.com
+  linkedin: linkedin.com/in/roby-attoillah
+  website: https://byrocuy.github.io
+
+summary: |-
+  Applied AI Engineer building production conversational AI and backend systems for healthcare workflows. I work across multi-agent orchestration, tool calling, real-time communication, API integrations, performance optimization, deployment, and observability.
+
+  My current work helps patients search for healthcare products, schedule appointments, complete payments, ask hospital questions, and connect with live agents through WhatsApp and web channels. I also support the operational side of these systems, from UAT readiness and deployment to monitoring, incident response, and security.
+
+work:
+  - role: Associate AI Engineer
+    org: PT. Bitheath Teknologi Pintar
+    location: Tangerang, Banten
+    start: 'February 2025'
+    end: 'Present'
+    bullets:
+      - |-
+        Lead backend delivery of a multichannel healthcare conversational AI platform using Python, FastAPI, LangChain, LangGraph, GPT-5.4 Nano/Mini, Gemini Flash 3.5, MongoDB, and Redis; build multi-agent and tool-calling workflows for MCU, laboratory, radiology, and homecare services across WhatsApp via 8x8 and website WebSockets.
+      - |-
+        Reduced production P50 time-to-first-token from 10–12 seconds to 2–3 seconds by streaming structured JSON over WebSockets, parallelizing sequential operations, moving initialization to application startup, and removing redundant processing and validation.
+      - |-
+        Built live-agent handoff and bidirectional communication from scratch, supporting text, document, image, and video messages, session mapping, conversation-history transfer, agent status, reconnection, fallback handling, message delivery, and SHA-256 signature verification.
+      - |-
+        Enabled AI to resolve 75% of attended patient sessions from January–June 2026 without live-agent escalation; the chatbot handled approximately 48,000–50,000 attended sessions per month in June–July 2026, reducing manual handling and improving context available to live agents.
+      - |-
+        Supported the doctor-booking backend across 41 Siloam hospital units, contributing to 26,400+ appointments (IDR 26.4B+ estimated revenue) from January–June 2026 through authentication, notifications, service integration, data transformation, retries, security, deployment, monitoring, incident resolution, and bug fixes.
+      - |-
+        Own UAT readiness and operations for 2–3 active projects on EC2 using Docker Compose and Nginx; configure environment variables, ports, database/Redis access, API connectivity, network whitelisting, permissions, self-hosted Arize Phoenix observability, and Elastic APM monitoring.
+  - role: AI/ML Developer Intern
+    org: KLINIKOO
+    location: Yogyakarta
+    start: 'November 2022'
+    end: 'December 2022'
+    bullets:
+      - |-
+        Developed a YOLOv5 object detection model for early dental-problem detection, including dental caries and stains.
+      - |-
+        Improved model speed by 300% and accuracy by 15%, achieving 0.765 mAP@0.5.
+      - |-
+        Ensured data quality through preprocessing using Label Studio.
+  - role: Jr. Prompt Engineer
+    org: PT. Skyshi Digital Indonesia
+    location: Sleman, Yogyakarta
+    start: 'May 2024'
+    end: 'February 2025'
+    bullets:
+      - |-
+        Developed a reliable and cost-efficient travel assistant chatbot in Python using LangChain, LangGraph, and OpenAI models. The chatbot tailors travel itineraries based on user preferences, handles booking reservations, and provides hotel and activity recommendations.
+      - |-
+        Optimized agent flow and tools, resulting in a 3x improvement in speed to interface with external data, including making API requests, extracting relevant internal documents, and handling user inquiries through post requests.
+
+skills:
+  groups:
+    - name: Languages & Data
+      items: [Python, SQL, MySQL, PostgreSQL, MongoDB, Redis, Git]
+    - name: AI & LLM
+      items: [LangChain, LangGraph, Multi-agent Systems, Tool Calling, Prompt Engineering, GPT, Gemini]
+    - name: Backend & Infrastructure
+      items: [FastAPI, WebSockets, REST API Integration, Docker Compose, Nginx, AWS EC2]
+    - name: Observability
+      items: [Arize Phoenix, Elastic APM]
+    - name: ML & Computer Vision
+      items: [PyTorch, TensorFlow, OpenCV, NLTK, XGBoost, scikit-learn, LightGBM]
+
+awards:
+  - title: Mastering AI Bootcamp
+    org: Ruangguru Engineering Academy+
+    date: October 2023
+    note: |-
+      Completed a comprehensive AI bootcamp focused on computer vision and NLP (LLM) fields. Tech stack: PyTorch, OpenCV, Pandas, NumPy.
+  - title: Neural Networks and Deep Learning
+    org: Coursera
+
+education:
+  school: Universitas Gadjah Mada
+  city: Yogyakarta, Indonesia
+  degree: Bachelor of Information Engineering
+  dates: 'August 2019 – November 2023'
+
+# M6c: explicit open-to-work line (from the legacy about.md footer).
+note: Open to Applied AI Engineer and AI Platform opportunities.

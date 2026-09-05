@@ -1,0 +1,26 @@
+---
+// TRACE PAPER ResumeSection (§3.4) — anchored résumé block:
+//   mono index ("01 — WORK"), Fraunces H2, hairline rule.
+// The slot carries the entries (org + role + mono date range + badges),
+// styled by the .resume-entry* classes in components.css.
+// Props:
+//   index — two-digit mono index, "01" …
+//   title — section title (Fraunces H2, also uppercased in the mono label)
+//   id    — anchor id for in-page links / print stability
+interface Props {
+  index: string;
+  title: string;
+  id?: string;
+}
+
+const { index, title, id } = Astro.props;
+---
+<section class="resume-section" id={id}>
+  <header class="resume-section__head">
+    <p class="mono-label">
+      {index} — {title}
+    </p>
+    <h2>{title}</h2>
+  </header>
+  <slot />
+</section>

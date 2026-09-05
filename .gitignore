@@ -1,37 +1,42 @@
-# Bundler cache
-.bundle
-vendor
-Gemfile.lock
+# build output
+dist/
+# generated types
+.astro/
 
-# Jekyll cache
-.jekyll-cache
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+
+# environment variables
+.env
+.env.production
+.env.*
+
+# pre-draft notes & reference material (stays out of the build, PLAN §4.3)
+/notes/
+
+# design reference screenshots (drafts — stay in the working dir, not the repo)
+/*.png
+
+# macOS-specific files
+.DS_Store
+
+# jetbrains setting folder
+.idea/
+
+# leftovers from the Jekyll era (M6c swap) — kept on disk, never tracked
+.jekyll-cache/
 .jekyll-metadata
-_site
-
-# RubyGems
-*.gem
-
-# NPM dependencies
-node_modules
-package-lock.json
-
-# IDE configurations
-.idea
-.vscode/*
-!.vscode/settings.json
-!.vscode/extensions.json
-!.vscode/tasks.json
-
-# Misc
-_sass/vendors
-assets/js/dist
-
-# Local
+_site/
 local/
-
-# Local agent configuration
 .pi/
 AGENTS.md
-
-# Ignore file
 .ignore
+_sass/vendors
+assets/js/dist

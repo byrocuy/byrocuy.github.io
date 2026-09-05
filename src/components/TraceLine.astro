@@ -1,0 +1,67 @@
+---
+// TraceLine (§3.5) — the ONE signature interaction.
+//
+// An inline SVG oscilloscope S-curve that ends in a small square
+// "measurement marker". The path draws itself (stroke-dashoffset
+// interpolates full → 0 over ~700 ms, cubic ease) when it enters
+// the viewport. dasharray/dashoffset are set from getTotalLength()
+// by the script below; the CSS @keyframes does the draw.
+//
+// prefers-reduced-motion: reduce → the line renders complete
+// instantly and no transition runs (script + CSS media query).
+//
+// Props:
+//   label — accessible name (aria-label) for the graphic.
+interface Props {
+  label?: string;
+}
+
+const { label } = Astro.props;
+
+// Oscilloscope S-curve (cubic beziers) ending in a 7×7 square marker.
+const TRACE_PATH =
+  'M 4 21 C 96 21, 128 5, 212 5 C 308 5, 352 21, 444 21 C 486 21, 514 17, 536 13 L 552 13 v 7 h 7 v -7';
+---
+<svg
+  class="trace-line"
+  viewBox="0 0 640 28"
+  role={label ? 'img' : undefined}
+  aria-label={label}
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path class="trace-line__path" d={TRACE_PATH} />
+</svg>
+
+<script>
+  // Set dasharray/dashoffset from the real path length, then watch for
+  // viewport entry. Reduced-motion users get a complete line instantly.
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  for (const svg of document.querySelectorAll('.trace-line')) {
+    const path = svg.querySelector('.trace-line__path') as SVGPathElement | null;
+    if (!path) continue;
+
+    const len = path.getTotalLength();
+    path.style.strokeDasharray = String(len);
+    path.style.strokeDashoffset = String(len);
+
+    // prefers-reduced-motion: complete instantly, no transition.
+    if (reduceMotion) {
+      path.style.strokeDashoffset = '0';
+      continue;
+    }
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            svg.classList.add('trace-line--visible');
+            io.disconnect();
+          }
+        }
+      },
+      { threshold: 0.2 },
+    );
+    io.observe(svg);
+  }
+</script>

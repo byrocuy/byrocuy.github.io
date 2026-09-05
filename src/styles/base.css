@@ -1,0 +1,152 @@
+/* ============================================================
+   TRACE PAPER — base
+   Reset-ish, body defaults, headings defaults, focus,
+   skip-link, dot-grid utility. Depends on tokens.css.
+   ============================================================ */
+
+/* ——— Reset-ish ——— */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  background-color: var(--paper-0);
+  color: var(--ink-900);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  font-weight: 400;
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  background: none;
+  border: 1px solid var(--hairline-2);
+  border-radius: var(--r-sm);
+  padding: var(--s2) var(--s3);
+  font-family: var(--font-mono);
+  font-size: var(--label);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+a {
+  color: var(--accent-600);
+  text-underline-offset: 0.15em;
+}
+
+/* ——— Heading defaults (prose.css re-declares under `.prose`) ——— */
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--ink-900);
+  text-wrap: balance;
+}
+h1 {
+  font-size: var(--display);
+  font-weight: 600;
+  line-height: 1.05;
+}
+h2 {
+  font-size: var(--step-4);
+  font-weight: 600;
+}
+h3 {
+  font-size: var(--step-3);
+  font-weight: 600;
+}
+h4 {
+  font-size: var(--step-2);
+  font-weight: 500;
+}
+h5 {
+  font-size: var(--step-1);
+  font-weight: 500;
+}
+
+/* ——— §3.3 Focus: 2px accent-600 outline + 2px paper offset ring ——— */
+:focus-visible {
+  outline: 2px solid var(--accent-600);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--paper-0); /* paper offset ring */
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ——— §3.5 a11y baseline: skip-link ——— */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: var(--s4);
+  z-index: 100;
+  padding: var(--s2) var(--s4);
+  background: var(--ink-900);
+  color: var(--paper-0);
+  border-radius: var(--r-sm);
+  font-family: var(--font-mono);
+  font-size: var(--label);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.skip-link:focus-visible {
+  top: var(--s3);
+}
+
+/* ——— §3.3 Dot-grid texture ———
+   Data-URI radial-gradient dot grid at ~4% ink over paper
+   (plotter paper, not film grain). Apply to hero + section
+   dividers ONLY, via the .dot-grid utility class. */
+.dot-grid {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22'%3E%3Cdefs%3E%3CradialGradient id='g' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='0%25' stop-color='%2316140F' stop-opacity='0.05'/%3E%3Cstop offset='100%25' stop-color='%2316140F' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle cx='1.5' cy='1.5' r='1.6' fill='url(%23g)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 22px 22px;
+}

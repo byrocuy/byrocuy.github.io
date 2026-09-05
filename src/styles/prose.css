@@ -1,0 +1,240 @@
+/* ============================================================
+   TRACE PAPER — prose (article typography)
+   PLAN §3.2 (type) · §3.4 (tables, blockquotes, figures)
+   Applied via `.prose` on article / post bodies.
+   ============================================================ */
+
+.prose {
+  max-width: var(--measure-prose);
+  margin-inline: auto;
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: var(--lh-body);
+  color: var(--ink-900);
+}
+
+/* ——— Stacked rhythm ——— */
+.prose > * + * {
+  margin-top: var(--s4);
+}
+.prose > h1,
+.prose > h2,
+.prose > h3 {
+  margin-top: var(--s7);
+}
+.prose > h4,
+.prose > h5,
+.prose > h6 {
+  margin-top: var(--s5);
+}
+.prose > h1:first-child,
+.prose > h2:first-child {
+  margin-top: 0;
+}
+
+/* ——— §3.2 Headings: Fraunces, clamp scale ——— */
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5 {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--ink-900);
+  text-wrap: balance;
+}
+.prose h1 {
+  font-size: var(--display);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+.prose h2 {
+  font-size: var(--step-4);
+  font-weight: 600;
+}
+.prose h3 {
+  font-size: var(--step-3);
+  font-weight: 600;
+}
+.prose h4 {
+  font-size: var(--step-2);
+  font-weight: 500;
+}
+.prose h5 {
+  font-size: var(--step-1);
+  font-weight: 500;
+}
+/* h6 = ledger-style mono caption head */
+.prose h6 {
+  font-family: var(--font-mono);
+  font-size: var(--label);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-700);
+}
+
+/* ——— Lead paragraph: Fraunces italic (echo, light theme) ——— */
+.prose > p:first-of-type {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-optical-sizing: auto;
+  font-size: var(--step-1);
+  line-height: 1.45;
+  color: var(--ink-700);
+}
+
+/* ——— Links — §3.1 contrast rule: text links are accent-600/700 ——— */
+.prose a {
+  color: var(--accent-600);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.15em;
+}
+.prose a:hover,
+.prose a:visited {
+  color: var(--accent-700);
+}
+
+.prose strong {
+  font-weight: 600;
+  color: var(--ink-900);
+}
+
+/* Emphasis = Fraunces italic (§3.2) */
+.prose em {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-optical-sizing: auto;
+}
+
+/* ——— Inline code: Plex Mono, accent-100 wash ——— */
+.prose :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  font-weight: 400;
+  background: var(--accent-100);
+  color: var(--ink-900);
+  padding: 0.08em 0.35em;
+  border-radius: var(--r-sm);
+}
+
+/* ——— §3.4 Code panel: ink, single deliberate inversion ——— */
+.prose pre {
+  background: var(--code-bg);
+  color: var(--code-ink);
+  border: 1px solid var(--hairline-2);
+  border-radius: var(--r-md);
+  padding: var(--s5);
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1.65;
+  tab-size: 2;
+}
+.prose pre code {
+  background: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+/* ——— §3.4 Tables: square corners, hairline both axes ——— */
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--step--1);
+  line-height: 1.5;
+}
+.prose th,
+.prose td {
+  border: 1px solid var(--hairline);
+  padding: var(--s2) var(--s3);
+  text-align: left;
+  vertical-align: top;
+}
+.prose thead th {
+  font-family: var(--font-mono);
+  font-size: var(--label);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-700);
+  background: var(--paper-1);
+  border-bottom: 1px solid var(--hairline-2);
+}
+.prose tbody tr:hover td {
+  background: var(--paper-1);
+}
+.prose .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ——— Blockquote / pull-quote: Fraunces italic, vermilion bar ——— */
+.prose blockquote {
+  margin: var(--s6) 0;
+  padding: var(--s4) 0 var(--s4) var(--s5);
+  border-left: 3px solid var(--accent-500);
+  color: var(--ink-700);
+}
+.prose blockquote p {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-optical-sizing: auto;
+  font-size: var(--step-2);
+  line-height: 1.45;
+}
+.prose blockquote p + p {
+  margin-top: var(--s3);
+}
+.prose blockquote cite {
+  font-family: var(--font-mono);
+  font-style: normal;
+  font-size: var(--label);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-500);
+}
+
+/* ——— Figures ——— */
+.prose figure {
+  margin: var(--s6) 0;
+}
+.prose figure img {
+  border-radius: var(--r-md);
+}
+.prose figcaption {
+  margin-top: var(--s2);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.06em;
+  color: var(--ink-500);
+}
+
+/* ——— Lists ——— */
+.prose ul,
+.prose ol {
+  padding-left: 1.4em;
+}
+.prose li + li {
+  margin-top: var(--s1);
+}
+.prose li::marker {
+  color: var(--ink-300);
+}
+
+/* ——— Rule —— */
+.prose hr {
+  border: 0;
+  border-top: 1px solid var(--hairline);
+  margin: var(--s6) 0;
+}

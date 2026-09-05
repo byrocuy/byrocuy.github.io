@@ -1,0 +1,67 @@
+---
+// TRACE PAPER post route — /blog/[slug] (PLAN §4.1, M5).
+// Builds one static page per non-draft post via the content layer, renders
+// it inside PostLayout with the §6 MDX component map, and computes the
+// reading time (word count / 220 wpm) and prev/next links (pubDate-ordered)
+// from the collection.
+//
+// §6 opt-ins are honored here:
+//   extensions.math    → PostLayout gates the katex stylesheet <link>
+//   extensions.mermaid → the Mermaid component is swapped for a no-op unless
+//                        the post opts in, so the lazy mermaid client chunk
+//                        never ships on posts that don't use diagrams.
+import PostLayout from '../../layouts/PostLayout.astro';
+import { components as mdxComponents } from '../../components/mdx';
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+
+type Post = CollectionEntry<'posts'>;
+
+export async function getStaticPaths() {
+  const posts = (await getCollection('posts')).filter((p) => !p.data.draft);
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props as { post: Post };
+
+const components = post.data.extensions.mermaid
+  ? mdxComponents
+  : { ...mdxComponents, Mermaid: () => null };
+
+// Reading time: plain-words-of-body / 220 wpm (PLAN §4.2). Code fences and
+// JSX/markup are stripped so code isn't counted as prose.
+const bodyText = post.body ?? ''
+  .replace(/```[\s\S]*?```/g, ' ')
+  .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
+  .replace(/<[^>]+>/g, ' ')
+  .replace(/[#>*_`~()[\]|]/g, ' ');
+const readingTime = Math.max(
+  1,
+  Math.round(bodyText.trim().split(/\s+/).filter(Boolean).length / 220),
+);
+
+// Prev/next by pubDate (ascending → prev is OLDER, next is NEWER).
+const allPosts = (await getCollection('posts'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => a.data.pubDate.valueOf() - b.data.pubDate.valueOf());
+const idx = allPosts.findIndex((p) => p.id === post.id);
+const prev = idx > 0 ? allPosts[idx - 1] : undefined;
+const next = idx >= 0 && idx < allPosts.length - 1 ? allPosts[idx + 1] : undefined;
+
+const { Content } = await render(post);
+const canonical = new URL(`/blog/${post.id}/`, Astro.site ?? 'https://byrocuy.github.io');
+---
+<PostLayout
+  title={post.data.title}
+  description={post.data.description}
+  pubDate={post.data.pubDate}
+  updated={post.data.updated}
+  readingTime={readingTime}
+  tags={post.data.tags}
+  math={post.data.extensions.math}
+  canonical={canonical}
+  prev={prev ? { title: prev.data.title, href: `/blog/${prev.id}/` } : undefined}
+  next={next ? { title: next.data.title, href: `/blog/${next.id}/` } : undefined}
+>
+  <Content components={components} />
+</PostLayout>

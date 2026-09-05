@@ -1,0 +1,186 @@
+---
+// TRACE PAPER résumé page — /resume (PLAN §4.1, §3.4).
+// Seeded entirely from the content collections (M3):
+//   profile.yaml    → contact / work / skills / awards / education
+//   projects/*.yaml → project entries (regional-sentiment.yaml)
+// astro check validates both files against the schemas in config.ts.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import TraceLine from '../components/TraceLine.astro';
+import Badge from '../components/Badge.astro';
+import MetricBadge from '../components/MetricBadge.astro';
+import ResumeSection from '../components/ResumeSection.astro';
+import { getEntry, getCollection } from 'astro:content';
+
+const profileEntry = await getEntry('resume', 'profile');
+if (!profileEntry) {
+  throw new Error('Missing src/content/resume/profile.yaml — resume collection entry not found');
+}
+const profile = profileEntry;
+const { contact, summary, work, skills, awards, education, note } = profile.data;
+const [project] = await getCollection('projects');
+---
+<BaseLayout
+  title={`Résumé — ${contact.name}`}
+  current="resume"
+  description={`Résumé of ${contact.name} — Associate AI Engineer slicing P50 first-token latency from 10s to 2s, 75% AI-resolved sessions, 41 Siloam hospital units, IDR 26.4B+, UGM graduate.`}
+>
+  <div class="page">
+    <!-- ——— Header: name + contact strip (§5.1 header row) ——— -->
+    <header class="resume-head">
+      <p class="mono-label">Résumé · Measurement Logbook</p>
+      <h1>{contact.name}</h1>
+      <TraceLine label={`Latency trace — ${contact.name}`} />
+      {note && <p class="resume-open">{note}</p>}
+      <ul class="resume-contact">
+        <li>{contact.location}</li>
+        <li>
+          <a href={`tel:${contact.phone.replace(/\s/g, '')}`}>{contact.phone}</a>
+        </li>
+        <li>
+          <a href={`mailto:${contact.email}`}>{contact.email}</a>
+        </li>
+        <li>
+          <a href={`https://${contact.linkedin}`} target="_blank" rel="me">
+            {contact.linkedin}
+          </a>
+        </li>
+        <li>
+          <a href={contact.website} target="_blank" rel="me">
+            {contact.website.replace(/^https?:\/\//, '')}
+          </a>
+        </li>
+      </ul>
+    </header>
+
+    <!-- ——— Summary: Fraunces lead from about.md (M6c) ——— -->
+    {summary && (
+      <div class="resume-summary">
+        {summary.split('\n\n').map((p) => <p>{p}</p>)}
+      </div>
+    )}
+
+    <!-- ——— Headline measurements from the résumé's facts ——— -->
+    <div class="resume-metrics" aria-label="Headline metrics">
+      <MetricBadge value="10s → 2s" label="P50 first-token latency" />
+      <MetricBadge value="75%" label="sessions resolved by AI" />
+      <MetricBadge value="41" label="Siloam hospital units" />
+      <MetricBadge value="26,400+" label="appointments served" dataValue="26400" />
+      <MetricBadge value="26.4B+" label="IDR estimated revenue" />
+      <MetricBadge value="99.94%" label="best stacked accuracy" />
+    </div>
+
+    <!-- 01 — Work -->
+    <ResumeSection index="01" title="Work Experience" id="work">
+      {work.map((w) => (
+        <article class="resume-entry">
+          <header class="resume-entry__head">
+            <div class="resume-entry__main">
+              <h3 class="resume-entry__org">{w.org}</h3>
+              <p class="resume-entry__role">{w.role}</p>
+            </div>
+            <div class="resume-entry__aside">
+              <p class="resume-entry__dates tnum">
+                {w.start} – {w.end}
+              </p>
+              <p class="resume-entry__loc">{w.location}</p>
+            </div>
+          </header>
+          <ul class="resume-entry__bullets">
+            {w.bullets.map((b) => (
+              <li>{b}</li>
+            ))}
+          </ul>
+        </article>
+      ))}
+    </ResumeSection>
+
+    <!-- 02 — Projects -->
+    <ResumeSection index="02" title="Projects" id="projects">
+      {
+        project && (
+          <article class="resume-entry">
+            <header class="resume-entry__head">
+              <div class="resume-entry__main">
+                <h3 class="resume-entry__org">{project.data.title}</h3>
+                <p class="resume-entry__role">{project.data.role}</p>
+                <p class="resume-entry__stack">
+                  {project.data.stack.map((s) => (
+                    <Badge label={s} />
+                  ))}
+                </p>
+              </div>
+              <div class="resume-entry__aside">
+                <p class="resume-entry__dates tnum">{String(project.data.year)}</p>
+                {project.data.award && (
+                  <p class="resume-entry__award">
+                    <Badge accent label={project.data.award} />
+                  </p>
+                )}
+              </div>
+            </header>
+            <p class="resume-entry__summary">{project.data.summary}</p>
+            <ul class="resume-entry__bullets">
+              {project.data.highlights.map((h) => (
+                <li>{h}</li>
+              ))}
+            </ul>
+          </article>
+        )
+      }
+    </ResumeSection>
+
+    <!-- 03 — Skills -->
+    <ResumeSection index="03" title="Skills" id="skills">
+      <div>
+        {skills.groups.map((g) => (
+          <div class="resume-skill-group">
+            <h3 class="resume-skill-group__name">{g.name}</h3>
+            <ul class="resume-skill-group__items">
+              {g.items.map((item) => (
+                <li>
+                  <Badge label={item} />
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </ResumeSection>
+
+    <!-- 04 — Awards & Certificates -->
+    <ResumeSection index="04" title="Awards & Certificates" id="awards">
+      {awards.map((a) => (
+        <article class="resume-entry">
+          <header class="resume-entry__head">
+            <div class="resume-entry__main">
+              <h3 class="resume-entry__org">{a.title}</h3>
+              <p class="resume-entry__role">{a.org}</p>
+            </div>
+            <div class="resume-entry__aside">
+              <p class="resume-entry__dates tnum">{a.date}</p>
+            </div>
+          </header>
+          {a.note && <p class="resume-entry__summary">{a.note}</p>}
+        </article>
+      ))}
+    </ResumeSection>
+
+    <!-- 05 — Education -->
+    <ResumeSection index="05" title="Education" id="education">
+      <article class="resume-entry">
+        <header class="resume-entry__head">
+          <div class="resume-entry__main">
+            <h3 class="resume-entry__org">
+              {education.school} <span class="resume-entry__abbr">(UGM)</span>
+            </h3>
+            <p class="resume-entry__role">{education.degree}</p>
+          </div>
+          <div class="resume-entry__aside">
+            <p class="resume-entry__dates tnum">{education.dates}</p>
+            <p class="resume-entry__loc">{education.city}</p>
+          </div>
+        </header>
+      </article>
+    </ResumeSection>
+  </div>
+</BaseLayout>

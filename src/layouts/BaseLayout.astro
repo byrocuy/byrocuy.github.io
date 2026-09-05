@@ -1,0 +1,86 @@
+---
+// TRACE PAPER base layout — head (fonts + tokens), skip-link,
+// header/main/footer landmarks, SEO basics. PLAN §3.2–3.5, §4.3.
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+import '@fontsource-variable/fraunces/full.css';
+import '@fontsource-variable/fraunces/full-italic.css';
+import '@fontsource/ibm-plex-sans/400.css';
+import '@fontsource/ibm-plex-sans/500.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
+import '../styles/tokens.css';
+import '../styles/base.css';
+import '../styles/prose.css';
+import '../styles/components.css';
+import '../styles/print.css';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  // PLAN §4.1 defaults: the site-level name + thesis line. Pages override
+  // both via props (every page already passes its own title/description).
+  title?: string;
+  description?: string;
+  /** Passed through to Nav for aria-current="page". */
+  current?: 'journal' | 'resume';
+  /** Absolute canonical URL — emitted as <link rel="canonical"> (posts). */
+  canonical?: string | URL;
+  /** og:type — 'website' by default, 'article' for posts. */
+  ogType?: 'website' | 'article';
+}
+
+const {
+  title = 'Roby Attoillah', // §9 decision 5: English-only, name as the site title
+  description = 'Engineering AI systems that answer in seconds',
+  current,
+  canonical,
+  ogType = 'website',
+} = Astro.props;
+
+// M6: social share image — public/og-default.png, rasterized by
+// scripts/og.mjs (sharp). Wired only when the file exists; base-aware so
+// BASE_PATH builds root assets correctly on both providers (§7).
+const site = Astro.site ?? new URL('https://byrocuy.github.io');
+const ogImage = existsSync(join(process.cwd(), 'public', 'og-default.png'))
+  ? new URL(`${import.meta.env.BASE_URL}og-default.png`, site)
+  : undefined;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#FBFAF6" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    {canonical && <link rel="canonical" href={String(canonical)} />}
+    <meta property="og:site_name" content="TRACE PAPER" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {canonical && <meta property="og:url" content={String(canonical)} />}
+    <meta property="og:type" content={ogType} />
+    {ogImage && (
+      <>
+        <meta property="og:image" content={ogImage} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content="TRACE PAPER — Roby Attoillah, engineering AI systems that answer in seconds" />
+      </>
+    )}
+    <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+    {/* M5: optional named slot — PostLayout injects the gated katex <link>
+        here (extensions.math), keeping math CSS off every other page. */}
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Nav current={current} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

@@ -1,0 +1,15 @@
+---
+// TRACE PAPER Badge (§3.4) — thin wrapper over the .badge CSS in
+// components.css: mono caps 11px, hairline border, --r-sm, no fill.
+// Props:
+//   label  — badge text
+//   accent — text flips to accent-600 (the §3.1 contrast rule:
+//            text-level emphasis is accent-600/700, never accent-500).
+interface Props {
+  label: string;
+  accent?: boolean;
+}
+
+const { label, accent = false } = Astro.props;
+---
+<span class={accent ? 'badge badge--accent' : 'badge'}>{label}</span>

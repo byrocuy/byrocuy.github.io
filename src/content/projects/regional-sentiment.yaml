@@ -1,0 +1,25 @@
+# Regional Sentiment Analytics — project entry (PLAN §4.2 projects collection).
+# Migrated from resume.md PROJECTS section (M3).
+
+title: Regional Sentiment Analytics on Healthcare Service and Insurances (BPJS) in Indonesia
+year: 'December 2022'
+role: Big Data Competition Team Project
+stack:
+  - Python
+  - scikit-learn
+  - XGBoost
+  - CatBoost
+  - Scrapy
+  - NLTK
+  - Transformers
+summary: |-
+  Regional sentiment analysis of public opinion on healthcare services and insurances provided by BPJS in Indonesia, with a stacked ML model for patient-return prediction (99.94%).
+links: {}
+highlights:
+  - |-
+    Developed a regional sentiment analysis model to analyze public opinion on healthcare services and insurances provided by BPJS in Indonesia.
+  - |-
+    Developed a machine learning predictive model using scikit-learn, XGBoost, and CatBoost to predict patient return, achieving 99% accuracy; stacked several models to reach 99.94% while maintaining model speed.
+  - |-
+    Built a data scraping pipeline to extract, transform, and load Twitter data using Scrapy, then performed sentiment analysis with NLTK and transformer models for regional distribution.
+award: Most Scalable Algorithm
